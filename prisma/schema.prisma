@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String  @id @default(uuid())
+  email          String  @unique
+  hashedPassword String  @map("hashed_password")
+  name           String
+  orders         Order[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model ProductCategory {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  products Product[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("product_categories")
+}
+
+model Product {
+  id          String          @id @default(uuid())
+  name        String
+  description String
+  imageUrls   String[]        @map("image_urls")
+  isAvailable Boolean         @map("is_available")
+  price       Int
+  categoryId  String          @map("category_id")
+  category    ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  orders      ProductOrder[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("products")
+}
+
+model ProductOrder {
+  id        String  @id @default(uuid())
+  productId String  @map("product_id")
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  orderId   String  @map("order_id")
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  quantity  Int     @default(1)
+  total     Int
+
+  @@unique([productId, orderId])
+  @@map("products_orders")
+}
+
+model Order {
+  id       String         @id @default(uuid())
+  isPaid   Boolean        @map("is_paid")
+  userId   String         @map("user_id")
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  total    Int
+  products ProductOrder[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("orders")
+}
