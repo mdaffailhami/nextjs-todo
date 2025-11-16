@@ -56,7 +56,7 @@ export default function SigninPage() {
           Sign Up
         </Button>
         <p className="text-muted-foreground">
-          Already have one? <Link href="/signup">Sign-in here</Link>
+          Already have one? <Link href="/signin">Sign-in here</Link>
         </p>
       </CardFooter>
     </Card>

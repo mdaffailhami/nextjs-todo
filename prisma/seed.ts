@@ -6,15 +6,24 @@ async function main() {
   const users: Prisma.UserCreateInput[] = [
     {
       id: "u1",
-      name: "Alice",
-      email: "alice@example.com",
-      hashedPassword: "hashed123",
+      name: "Daffa Ilhami",
+      email: "mdaffailhami@gmail.com",
+      hashedPassword:
+        "$2a$12$u/0n/dpxE16CnTUp1lYRLehPFhnoNe5qk2oJLniL8ZJPgRCNTxD7G",
     },
     {
       id: "u2",
+      name: "Alice",
+      email: "alice@example.com",
+      hashedPassword:
+        "$2a$12$f.2N9jV..YW/aSq6dJS.3uV.x1Ogj5H/At/Xr7VbTyOD78.9ZqqC.",
+    },
+    {
+      id: "u3",
       name: "Bob",
       email: "bob@example.com",
-      hashedPassword: "hashed456",
+      hashedPassword:
+        "$2a$12$bt2vPMfDw4RDcR9dM9HI2OJRBXvYSlxxqaZ9a9ShVAHweGdvaekA2",
     },
   ];
 
