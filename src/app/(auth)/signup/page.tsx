@@ -15,12 +15,21 @@ export default function SigninPage() {
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="text-primary text-center text-2xl">
-          Sign-in to your account
+          Create your account
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form>
           <div className="flex flex-col gap-6">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter your name"
+                required
+              />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -35,22 +44,19 @@ export default function SigninPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Create your password"
                 required
               />
-              <p className="text-muted-foreground ml-auto">
-                Forgot your password? <Link href="/signin/reset">Reset</Link>
-              </p>
             </div>
           </div>
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
         <Button type="submit" className="w-full">
-          Sign In
+          Sign Up
         </Button>
         <p className="text-muted-foreground">
-          Doesn't have one yet? <Link href="/signup">Create here</Link>
+          Already have one? <Link href="/signup">Sign-in here</Link>
         </p>
       </CardFooter>
     </Card>
