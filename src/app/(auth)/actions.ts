@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/lib/utils/server";
+import { signIn } from "@/lib/actions";
 import { cookies as nextCookies } from "next/headers";
 import { redirect } from "next/navigation";
 

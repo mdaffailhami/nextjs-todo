@@ -1,7 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { checkSession, signOut } from "@/lib/utils/server";
-import Link from "next/link";
+import { checkSession } from "@/lib/utils/server";
 import { redirect } from "next/navigation";
+import { SignOutButton } from "./sign-out-button";
 
 export default async function HomePage() {
   const session = await checkSession();
@@ -10,9 +9,7 @@ export default async function HomePage() {
   return (
     <>
       <h1>Home Page</h1>
-      <Button asChild>
-        <Link href="/signout">Sign out</Link>
-      </Button>
+      <SignOutButton />
     </>
   );
 }
