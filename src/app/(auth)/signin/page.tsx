@@ -12,10 +12,10 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Link } from "@/components/ui/link";
 import { useState, useTransition } from "react";
-import { handleSignin } from "../actions";
 import { AlertCircleIcon } from "lucide-react";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { RequestCodeDialog } from "./request-code-dialog";
+import { signIn } from "../actions";
 
 export default function SigninPage() {
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +24,7 @@ export default function SigninPage() {
 
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const { error } = await handleSignin({
+      const { error } = await signIn({
         email: formData.get("email") as string,
         password: formData.get("password") as string,
       });
@@ -88,7 +88,7 @@ export default function SigninPage() {
               </Alert>
             )}
             <p className="text-muted-foreground">
-              Doesn't have one yet? <Link href="/signup">Create here</Link>
+              {"Doesn't"} have one yet? <Link href="/signup">Create here</Link>
             </p>
           </CardFooter>
         </Card>

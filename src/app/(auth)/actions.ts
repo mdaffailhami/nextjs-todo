@@ -1,14 +1,20 @@
 "use server";
 
-import { sendPasswordResetEmail, signIn } from "@/lib/actions";
-import { delay } from "@/lib/utils";
-import { cookies as useCookies } from "next/headers";
+import { delay, generateRandomNumber } from "@/lib/utils";
+import { cookies as nextCookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt from "jsonwebtoken";
-import { checkPassword } from "@/lib/utils/server";
-import { changeUserPassword } from "@/lib/data/user";
+import { checkPassword, hashPassword } from "@/lib/utils/server";
+import { changeUserPassword, getUserByEmail } from "@/lib/data/user";
 
-export async function handleSignin({
+export async function signOut() {
+  const cookies = await nextCookies();
+
+  cookies.delete("session_token");
+  redirect("/signin");
+}
+
+export async function signIn({
   email,
   password,
 }: {
@@ -17,12 +23,26 @@ export async function handleSignin({
 }): Promise<{ error: string | null }> {
   await delay(2);
 
-  const cookies = await useCookies();
+  const cookies = await nextCookies();
 
   let token;
   try {
-    const res = await signIn({ email, password });
-    token = res.token;
+    const user = await getUserByEmail(email);
+
+    if (!user) throw new Error("Email not registered");
+
+    // Verify whether the password is match or not
+    const isMatch = await checkPassword({
+      password: password,
+      hashedPassword: user.hashedPassword,
+    });
+
+    if (!isMatch) throw new Error("Incorrect password");
+
+    // Generate session token
+    token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_KEY!, {
+      expiresIn: "7d",
+    });
 
     // Set cookie
     cookies.set({
@@ -43,18 +63,51 @@ export async function handleSignin({
   return { error: null };
 }
 
-export async function handleRequestVerificationCode({
+export async function sendPasswordResetEmail({
   email,
 }: {
   email: string;
 }): Promise<{ error: string | null }> {
   await delay(2);
 
-  const cookies = await useCookies();
+  const cookies = await nextCookies();
 
   try {
-    // Send verification code
-    const { token } = await sendPasswordResetEmail(email);
+    const user = await getUserByEmail(email);
+
+    if (!user) throw new Error("Email not registered");
+
+    // Generate verification code
+    const code = generateRandomNumber(100000, 999999).toString();
+
+    const body = {
+      to: email,
+      subject: "NextJS E-commerce - Password Reset",
+      text: `Your password reset verification code is: ${code}`,
+      html: `Your password reset verification code is: <b>${code}</b>`,
+    };
+
+    // Make a POST request to the Google Script that will send the email
+    const res = await fetch(process.env.GOOGLE_SCRIPT_PASSWORD_RESET_URL!, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const { error, message } = await res.json();
+
+    if (error) throw new Error(message);
+
+    // Hash verification code (For JWT)
+    const hashedCode = await hashPassword(code);
+
+    const token = jwt.sign(
+      { email: email, code: hashedCode },
+      process.env.JWT_KEY!,
+      { expiresIn: "15m" },
+    );
 
     // Set cookie
     cookies.set({
@@ -75,14 +128,14 @@ export async function handleRequestVerificationCode({
   }
 }
 
-export async function handleCodeVerification({
+export async function verifyPasswordResetCode({
   code,
 }: {
   code: string;
 }): Promise<{ error: string | null }> {
   await delay(2);
 
-  const cookies = await useCookies();
+  const cookies = await nextCookies();
 
   try {
     // Get password reset token
@@ -114,7 +167,7 @@ export async function handleCodeVerification({
       { expiresIn: "15m" },
     );
 
-    // Create is_verification_code_valid cookie
+    // Create is verification code valid cookie
     cookies.set({
       name: "is_password_reset_verified_token",
       value: token,
@@ -131,7 +184,7 @@ export async function handleCodeVerification({
   }
 }
 
-export async function handleNewPasswordSubmission({
+export async function changePassword({
   password,
   passwordConfirmation,
 }: {
@@ -140,7 +193,7 @@ export async function handleNewPasswordSubmission({
 }): Promise<{ error: string | null }> {
   await delay(2);
 
-  const cookies = await useCookies();
+  const cookies = await nextCookies();
 
   try {
     // Get is password reset verified token

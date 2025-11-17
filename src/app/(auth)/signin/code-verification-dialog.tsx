@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
 import { useState, useTransition } from "react";
-import { handleCodeVerification } from "../actions";
+import { verifyPasswordResetCode } from "../actions";
 import { FormDialog } from "@/components/form-dialog";
 import { NewPasswordDialog } from "./new-password-dialog";
 
@@ -21,7 +21,7 @@ export function CodeVerificationDialog({
 
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const { error } = await handleCodeVerification({
+      const { error } = await verifyPasswordResetCode({
         code: formData.get("code") as string,
       });
 

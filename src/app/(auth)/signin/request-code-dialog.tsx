@@ -1,12 +1,10 @@
-"use client";
-
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
 import { useState, useTransition } from "react";
-import { handleRequestVerificationCode } from "../actions";
+import { sendPasswordResetEmail } from "../actions";
 import { FormDialog } from "@/components/form-dialog";
 import { CodeVerificationDialog } from "./code-verification-dialog";
 
@@ -24,7 +22,7 @@ export function RequestCodeDialog({
 
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const { error } = await handleRequestVerificationCode({
+      const { error } = await sendPasswordResetEmail({
         email: formData.get("email") as string,
       });
 

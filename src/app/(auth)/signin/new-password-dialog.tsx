@@ -4,10 +4,7 @@ import { Label } from "@/components/ui/label";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
 import { useState, useTransition } from "react";
-import {
-  handleCodeVerification,
-  handleNewPasswordSubmission,
-} from "../actions";
+import { changePassword } from "../actions";
 import { FormDialog } from "@/components/form-dialog";
 import { toast } from "sonner";
 
@@ -23,7 +20,7 @@ export function NewPasswordDialog({
 
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const { error } = await handleNewPasswordSubmission({
+      const { error } = await changePassword({
         password: formData.get("password") as string,
         passwordConfirmation: formData.get("password-confirmation") as string,
       });

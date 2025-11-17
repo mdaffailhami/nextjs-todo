@@ -1,10 +1,10 @@
 import "server-only";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { cookies as useCookies } from "next/headers";
+import { cookies as nextCookies } from "next/headers";
 
 export async function checkSession() {
-  const cookies = await useCookies();
+  const cookies = await nextCookies();
   const sessionToken = cookies.get("session_token")?.value;
 
   if (!sessionToken) return null;

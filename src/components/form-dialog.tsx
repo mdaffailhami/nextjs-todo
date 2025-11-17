@@ -9,6 +9,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+type FormDialogProps = {
+  isOpen: boolean;
+  title: string;
+  description: string;
+  negativeActionText?: string;
+  positiveActionText?: string;
+  onOpenChange: (isOpen: boolean) => void;
+  onSubmit: (formData: FormData) => void;
+  children: React.ReactNode;
+};
+
 export function FormDialog({
   isOpen,
   title,
@@ -18,16 +29,7 @@ export function FormDialog({
   onOpenChange,
   onSubmit,
   children,
-}: {
-  isOpen: boolean;
-  title: string;
-  description: string;
-  negativeActionText?: string;
-  positiveActionText?: String;
-  onOpenChange: (isOpen: boolean) => void;
-  onSubmit: (formData: FormData) => void;
-  children: React.ReactNode;
-}) {
+}: FormDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
