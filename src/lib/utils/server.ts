@@ -5,12 +5,12 @@ import { cookies as useCookies } from "next/headers";
 
 export async function checkSession() {
   const cookies = await useCookies();
-  const session = cookies.get("session")?.value;
+  const sessionToken = cookies.get("session_token")?.value;
 
-  if (!session) return null;
+  if (!sessionToken) return null;
 
   try {
-    return jwt.verify(session, process.env.JWT_KEY!);
+    return jwt.verify(sessionToken, process.env.JWT_KEY!);
   } catch {
     return null;
   }
