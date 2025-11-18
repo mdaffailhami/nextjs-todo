@@ -1,11 +1,133 @@
 "use server";
 
 import { delay, generateRandomNumber } from "@/lib/utils";
+import { checkHashedText, hashText, sendEmail } from "@/lib/utils/server";
 import { cookies as nextCookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt from "jsonwebtoken";
-import { checkPassword, hashPassword } from "@/lib/utils/server";
-import { changeUserPassword, getUserByEmail } from "@/lib/data/user";
+import {
+  changeUserPassword,
+  createUser,
+  getUserByEmail,
+} from "@/lib/data/user";
+
+export async function signUp({
+  email,
+  name,
+  password,
+  passwordConfirmation,
+}: {
+  email: string;
+  name: string;
+  password: string;
+  passwordConfirmation: string;
+}): Promise<{ error: string | null }> {
+  await delay(2);
+
+  const cookies = await nextCookies();
+
+  try {
+    // Verify whether the password is match or not
+    if (password !== passwordConfirmation)
+      throw new Error("Passwords do not match");
+
+    // Verify whether user already exist or not
+    const user = await getUserByEmail(email);
+
+    if (user) throw new Error("Email already exists");
+
+    // Generate verification code
+    const code = generateRandomNumber(100000, 999999).toString();
+
+    // Send email
+    await sendEmail({
+      to: email,
+      subject: "NextJS E-commerce - Signup",
+      text: `Your signup verification code is: ${code}`,
+      html: `Your signup verification code is: <b>${code}</b>`,
+    });
+
+    // Hash verification code (For JWT)
+    const hashedCode = await hashText(code);
+
+    // Hash password
+    const hashedPassword = await hashText(password);
+
+    // Create JWT
+    const token = jwt.sign(
+      {
+        email: email,
+        name: name,
+        password: hashedPassword,
+        code: hashedCode,
+      },
+      process.env.JWT_KEY!,
+      {
+        expiresIn: "15m",
+      },
+    );
+
+    // Set cookie
+    cookies.set({
+      name: "signup_token",
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 15, //15 minutes
+    });
+
+    return { error: null };
+  } catch (error) {
+    return { error: (error as Error).message };
+  }
+}
+
+export async function verifySignupCode({
+  code,
+}: {
+  code: string;
+}): Promise<{ error: string | null }> {
+  await delay(2);
+
+  const cookies = await nextCookies();
+
+  try {
+    // Get token
+    const signupToken = cookies.get("signup_token")?.value;
+
+    if (!signupToken) throw new Error("Something's wrong, please try again");
+
+    // Verify whether the JWT is valid or not
+    const payload = jwt.verify(
+      signupToken,
+      process.env.JWT_KEY!,
+    ) as jwt.JwtPayload;
+
+    // Verify whether the code is match or not
+    const isMatch = await checkHashedText({
+      text: code,
+      hashedText: payload.code,
+    });
+
+    if (!isMatch) throw new Error("Incorrect code");
+
+    // Delete cookie
+    cookies.delete("signup_token");
+
+    // Create user
+    await createUser({
+      email: payload.email,
+      name: payload.name,
+      hashedPassword: payload.password,
+    });
+
+    return { error: null };
+  } catch (error) {
+    return { error: (error as Error).message };
+  }
+}
 
 export async function signOut() {
   const cookies = await nextCookies();
@@ -32,9 +154,9 @@ export async function signIn({
     if (!user) throw new Error("Email not registered");
 
     // Verify whether the password is match or not
-    const isMatch = await checkPassword({
-      password: password,
-      hashedPassword: user.hashedPassword,
+    const isMatch = await checkHashedText({
+      text: password,
+      hashedText: user.hashedPassword,
     });
 
     if (!isMatch) throw new Error("Incorrect password");
@@ -80,28 +202,16 @@ export async function sendPasswordResetEmail({
     // Generate verification code
     const code = generateRandomNumber(100000, 999999).toString();
 
-    const body = {
+    // Send email
+    await sendEmail({
       to: email,
       subject: "NextJS E-commerce - Password Reset",
       text: `Your password reset verification code is: ${code}`,
       html: `Your password reset verification code is: <b>${code}</b>`,
-    };
-
-    // Make a POST request to the Google Script that will send the email
-    const res = await fetch(process.env.GOOGLE_SCRIPT_PASSWORD_RESET_URL!, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
     });
 
-    const { error, message } = await res.json();
-
-    if (error) throw new Error(message);
-
     // Hash verification code (For JWT)
-    const hashedCode = await hashPassword(code);
+    const hashedCode = await hashText(code);
 
     const token = jwt.sign(
       { email: email, code: hashedCode },
@@ -151,9 +261,9 @@ export async function verifyPasswordResetCode({
     ) as jwt.JwtPayload;
 
     // Verify whether the code is match or not
-    const isMatch = await checkPassword({
-      password: code,
-      hashedPassword: payload.code,
+    const isMatch = await checkHashedText({
+      text: code,
+      hashedText: payload.code,
     });
 
     if (!isMatch) throw new Error("Incorrect code");

@@ -1,12 +1,31 @@
 import "server-only";
 import prisma from "../prisma";
-import { hashPassword } from "../utils/server";
+import { hashText } from "../utils/server";
 import { User } from "@/generated/prisma/client";
 
 export async function getUserByEmail(email: string): Promise<User | null> {
   const user = await prisma.user.findUnique({ where: { email: email } });
 
   return user;
+}
+
+export async function createUser({
+  email,
+  name,
+  hashedPassword,
+}: {
+  email: string;
+  name: string;
+  hashedPassword: string;
+}): Promise<void> {
+  // Create new user
+  await prisma.user.create({
+    data: {
+      email,
+      name,
+      hashedPassword,
+    },
+  });
 }
 
 export async function changeUserPassword({
@@ -23,7 +42,7 @@ export async function changeUserPassword({
   await prisma.user.update({
     where: { email },
     data: {
-      hashedPassword: await hashPassword(newPassword),
+      hashedPassword: await hashText(newPassword),
     },
   });
 }

@@ -4,14 +4,16 @@ import { Label } from "@/components/ui/label";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
 import { useState, useTransition } from "react";
-import { verifyPasswordResetCode } from "../actions";
+import { verifyPasswordResetCode, verifySignupCode } from "./actions";
 import { FormDialog } from "@/components/form-dialog";
-import { NewPasswordDialog } from "./new-password-dialog";
+import { NewPasswordDialog } from "./signin/new-password-dialog";
 
 export function CodeVerificationDialog({
+  type,
   isOpen,
   setIsOpen,
 }: {
+  type: "password-reset" | "signup";
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }) {
@@ -21,15 +23,27 @@ export function CodeVerificationDialog({
 
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const { error } = await verifyPasswordResetCode({
-        code: formData.get("code") as string,
-      });
+      let error;
+      if (type == "signup") {
+        const res = await verifySignupCode({
+          code: formData.get("code") as string,
+        });
+
+        error = res.error;
+      } else {
+        const res = await verifyPasswordResetCode({
+          code: formData.get("code") as string,
+        });
+
+        error = res.error;
+      }
 
       setError(error);
 
       if (!error) {
         setIsOpen(false);
-        setIsNewPasswordDialogOpen(true);
+
+        if (type == "password-reset") setIsNewPasswordDialogOpen(true);
       }
     });
   };
@@ -72,10 +86,12 @@ export function CodeVerificationDialog({
           </div>
         </div>
       </FormDialog>
-      <NewPasswordDialog
-        isOpen={isNewPasswordDialogOpen}
-        setIsOpen={setIsNewPasswordDialogOpen}
-      />
+      {type == "password-reset" && (
+        <NewPasswordDialog
+          isOpen={isNewPasswordDialogOpen}
+          setIsOpen={setIsNewPasswordDialogOpen}
+        />
+      )}
     </>
   );
 }

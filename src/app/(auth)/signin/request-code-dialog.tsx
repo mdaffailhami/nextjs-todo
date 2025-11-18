@@ -6,7 +6,7 @@ import { AlertCircleIcon } from "lucide-react";
 import { useState, useTransition } from "react";
 import { sendPasswordResetEmail } from "../actions";
 import { FormDialog } from "@/components/form-dialog";
-import { CodeVerificationDialog } from "./code-verification-dialog";
+import { CodeVerificationDialog } from "../code-verification-dialog";
 
 export function RequestCodeDialog({
   isOpen,
@@ -73,6 +73,7 @@ export function RequestCodeDialog({
         </div>
       </FormDialog>
       <CodeVerificationDialog
+        type="password-reset"
         isOpen={isCodeVerificationDialogOpen}
         setIsOpen={setIsCodeVerificationDialogOpen}
       />
