@@ -7,9 +7,9 @@ export default async function HomePage() {
   if (!session) return redirect("/signin");
 
   return (
-    <>
+    <div className="h-999">
       <h1>Home Page</h1>
       <SignOutButton />
-    </>
+    </div>
   );
 }
