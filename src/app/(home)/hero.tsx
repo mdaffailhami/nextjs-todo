@@ -1,6 +1,6 @@
 export function Hero() {
   return (
-    <div className="bg-secondary border-b bg-[url('/hero-bg.png')] bg-cover">
+    <div className="bg-secondary border-b bg-[url('/hero-bg.png')] bg-cover bg-fixed">
       <div className="size-full bg-black/30 py-40">
         <div className="mx-auto max-w-130 px-3 text-center text-white">
           <h1>NextJS - E-commerce</h1>

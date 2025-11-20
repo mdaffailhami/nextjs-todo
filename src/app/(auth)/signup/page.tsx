@@ -27,7 +27,6 @@ export default function SigninPage() {
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
       const { error } = await signUp({
-        name: formData.get("name") as string,
         email: formData.get("email") as string,
         password: formData.get("password") as string,
         passwordConfirmation: formData.get("password-confirmation") as string,
@@ -52,16 +51,6 @@ export default function SigninPage() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder="Enter your name"
-                  required
-                />
-              </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input

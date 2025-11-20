@@ -9,10 +9,10 @@ export default async function HomePage() {
   if (!session) return redirect("/signin");
 
   return (
-    <div className="min-h-screen">
+    <main className="min-h-screen">
       <Hero />
       <ProductList />
       <SignOutButton />
-    </div>
+    </main>
   );
 }

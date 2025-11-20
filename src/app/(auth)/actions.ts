@@ -13,12 +13,10 @@ import {
 
 export async function signUp({
   email,
-  name,
   password,
   passwordConfirmation,
 }: {
   email: string;
-  name: string;
   password: string;
   passwordConfirmation: string;
 }): Promise<{ error: string | null }> {
@@ -50,15 +48,11 @@ export async function signUp({
     // Hash verification code (For JWT)
     const hashedCode = await hashText(code);
 
-    // Hash password
-    const hashedPassword = await hashText(password);
-
     // Create JWT
     const token = jwt.sign(
       {
         email: email,
-        name: name,
-        password: hashedPassword,
+        password: password,
         code: hashedCode,
       },
       process.env.JWT_KEY!,
@@ -119,8 +113,7 @@ export async function verifySignupCode({
     // Create user
     await createUser({
       email: payload.email,
-      name: payload.name,
-      hashedPassword: payload.password,
+      password: payload.password,
     });
 
     return { error: null };

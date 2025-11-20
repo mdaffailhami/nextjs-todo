@@ -16,7 +16,7 @@ export default async function AuthLayout({
         {/* Invisible element to push top bar to the top */}
         <div className="h-18"></div>
       </header>
-      <main className="">{children}</main>
+      {children}
       <footer>
         <Footer />
         {/* Invisible element to push mobile bottom bar to the bottom */}

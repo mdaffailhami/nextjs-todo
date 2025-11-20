@@ -11,19 +11,16 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 
 export async function createUser({
   email,
-  name,
-  hashedPassword,
+  password,
 }: {
   email: string;
-  name: string;
-  hashedPassword: string;
+  password: string;
 }): Promise<void> {
   // Create new user
   await prisma.user.create({
     data: {
       email,
-      name,
-      hashedPassword,
+      hashedPassword: await hashText(password),
     },
   });
 }
