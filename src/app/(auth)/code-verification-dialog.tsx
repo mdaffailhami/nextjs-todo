@@ -7,7 +7,12 @@ import { useState, useTransition } from "react";
 import { verifyPasswordResetCode, verifySignupCode } from "./actions";
 import { FormDialog } from "@/components/form-dialog";
 import { NewPasswordDialog } from "./signin/new-password-dialog";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
+/**
+ * Renders a dialog for users to verify a code, either for password reset or signup.
+ */
 export function CodeVerificationDialog({
   type,
   isOpen,
@@ -17,6 +22,7 @@ export function CodeVerificationDialog({
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isNewPasswordDialogOpen, setIsNewPasswordDialogOpen] = useState(false);
@@ -43,7 +49,18 @@ export function CodeVerificationDialog({
       if (!error) {
         setIsOpen(false);
 
+        // Open new password dialog if the type is password reset
         if (type == "password-reset") setIsNewPasswordDialogOpen(true);
+        // Show success message if the type is signup
+        else {
+          // Show success message
+          toast("Account created successfully", {
+            description: "You can now sign in with your account.",
+          });
+
+          // Push to signin page
+          router.push("/signin");
+        }
       }
     });
   };
