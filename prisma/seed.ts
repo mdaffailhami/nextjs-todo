@@ -17,7 +17,7 @@ export async function main() {
       id: "u1",
       email: "mdaffailhami@gmail.com",
       hashedPassword:
-        "$2a$12$u/0n/dpxE16CnTUp1lYRLehPFhnoNe5qk2oJLniL8ZJPgRCNTxD7G",
+        "$2a$12$av4kWzFL4lWXqX21YKZ74et9k8V7eVnIp74v4d0R4OBrUOenZCbHS",
     },
     {
       id: "u2",

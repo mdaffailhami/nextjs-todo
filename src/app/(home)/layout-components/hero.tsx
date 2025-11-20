@@ -1,12 +1,12 @@
 export function Hero() {
   return (
     <div className="bg-secondary border-b bg-[url('/hero-bg.png')] bg-cover bg-fixed">
-      <div className="size-full bg-black/30 py-40">
+      <div className="size-full bg-black/30 py-12">
         <div className="mx-auto max-w-130 px-3 text-center text-white">
-          <h1>NextJS - E-commerce</h1>
+          <h1>NextJS Todo</h1>
           <p className="mt-4">
-            Welcome to our e-commerce app, your one-stop shop for all your
-            needs. Discover a wide range of products with the best deals.
+            Welcome to NextJS Todo, your ultimate task management solution built
+            with Next.js.
           </p>
         </div>
       </div>
