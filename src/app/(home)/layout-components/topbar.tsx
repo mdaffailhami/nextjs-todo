@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { getSignedInUser } from "@/lib/data/user";
 import { LogOut, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
-export function Topbar({ email }: { email: string }) {
+export function Topbar() {
   return (
     <nav className="bg-background fixed flex h-18 w-full flex-row items-center justify-between border-b-2 px-2 md:px-4">
       <section>
@@ -12,8 +15,9 @@ export function Topbar({ email }: { email: string }) {
         </Link>
       </section>
       <section className="flex flex-row items-center gap-x-2">
-        <User />
-        <span className="font-medium italic">{email}</span>
+        <Suspense fallback={<p>...</p>}>
+          <UserEmail />
+        </Suspense>
         <Button
           variant={"ghost"}
           size={"icon-lg"}
@@ -26,5 +30,18 @@ export function Topbar({ email }: { email: string }) {
         </Button>
       </section>
     </nav>
+  );
+}
+
+async function UserEmail() {
+  const user = await getSignedInUser();
+
+  if (!user) return redirect("/signin");
+
+  return (
+    <>
+      <User />
+      <span className="font-medium italic">{user.email}</span>
+    </>
   );
 }

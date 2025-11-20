@@ -1,10 +1,9 @@
 import { TaskCard } from "@/components/task-card";
-import { getTasksByUserEmail } from "@/lib/data/tasks";
+import { getSignedInUserTasks } from "@/lib/data/tasks";
 
 export default async function CompletedPage() {
-  const tasks = await getTasksByUserEmail({
-    email: "mdaffailhami@gmail.com",
-    status: "completed",
+  const tasks = await getSignedInUserTasks({
+    category: "completed",
   });
 
   return (

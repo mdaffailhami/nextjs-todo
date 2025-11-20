@@ -19,31 +19,27 @@ export async function getSignedInUser() {
 
   const cookies = await nextCookies();
 
-  try {
-    // Get session token from cookies
-    const sessionToken = cookies.get("session_token")?.value;
+  // Get session token from cookies
+  const sessionToken = cookies.get("session_token")?.value;
 
-    // If session token doesn't exist
-    if (!sessionToken) return null;
+  // If session token doesn't exist
+  if (!sessionToken) return null;
 
-    // Verify session token
-    const token = jwt.verify(sessionToken, process.env.JWT_KEY!);
+  // Verify session token
+  const token = jwt.verify(sessionToken, process.env.JWT_KEY!);
 
-    // Check if token exists and is valid
-    if (typeof token !== "object") return null;
+  // Check if token exists and is valid
+  if (typeof token !== "object") return null;
 
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: token.email },
-    });
+  // Get user from database
+  const user = await prisma.user.findUnique({
+    where: { email: token.email },
+  });
 
-    // If user doesn't exist
-    if (!user) return null;
+  // If user doesn't exist
+  if (!user) return null;
 
-    return user;
-  } catch {
-    return null;
-  }
+  return user;
 }
 
 export async function createUser({
