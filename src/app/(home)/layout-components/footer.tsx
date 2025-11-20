@@ -1,6 +1,6 @@
 export function Footer() {
   return (
-    <div className="bg-muted py-6 text-center">
+    <footer className="bg-muted py-6 text-center">
       <div className="mx-auto max-w-130 px-3">
         <span className="text-2xl font-medium">NextJS Todo</span>
         <p className="mt-2">
@@ -11,6 +11,6 @@ export function Footer() {
           <i>© 2025 NextJS Todo. All rights reserved.</i>
         </span>
       </div>
-    </div>
+    </footer>
   );
 }

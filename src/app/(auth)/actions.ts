@@ -122,13 +122,6 @@ export async function verifySignupCode({
   }
 }
 
-export async function signOut() {
-  const cookies = await nextCookies();
-
-  cookies.delete("session_token");
-  redirect("/signin");
-}
-
 export async function signIn({
   email,
   password,
