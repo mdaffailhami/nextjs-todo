@@ -1,20 +1,5 @@
 import "server-only";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { cookies as nextCookies } from "next/headers";
-
-export async function checkSession() {
-  const cookies = await nextCookies();
-  const sessionToken = cookies.get("session_token")?.value;
-
-  if (!sessionToken) return null;
-
-  try {
-    return jwt.verify(sessionToken, process.env.JWT_KEY!);
-  } catch {
-    return null;
-  }
-}
 
 export async function hashText(password: string): Promise<string> {
   const saltRounds = 12;
