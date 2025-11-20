@@ -38,7 +38,7 @@ export async function main() {
     {
       id: "t1",
       name: "Finish the whole Qur'an",
-      deadline: new Date("2025-12-31T00:00:00Z"),
+      deadline: new Date("2026-02-15T00:00:00Z"),
       isCompleted: false,
       user: { connect: { id: "u1" } },
     },
@@ -62,6 +62,20 @@ export async function main() {
       deadline: new Date("2025-02-28T00:00:00Z"),
       isCompleted: false,
       user: { connect: { id: "u3" } },
+    },
+    {
+      id: "t5",
+      name: "Master Order Flow",
+      deadline: new Date("2025-12-31T00:00:00Z"),
+      isCompleted: false,
+      user: { connect: { id: "u1" } },
+    },
+    {
+      id: "t6",
+      name: "Get certificate",
+      deadline: new Date("2025-11-16T00:00:00Z"),
+      isCompleted: true,
+      user: { connect: { id: "u1" } },
     },
   ];
 

@@ -1,7 +1,11 @@
 import "server-only";
+
 import bcrypt from "bcrypt";
+import { delay } from ".";
 
 export async function hashText(password: string): Promise<string> {
+  await delay(2);
+
   const saltRounds = 12;
 
   try {
@@ -20,6 +24,8 @@ export async function checkHashedText({
   text: string;
   hashedText: string;
 }>): Promise<boolean> {
+  await delay(2);
+
   try {
     const isMatch = await bcrypt.compare(text, hashedText);
     return isMatch;
@@ -35,6 +41,8 @@ export async function sendEmail(body: {
   text: string;
   html: string;
 }): Promise<void> {
+  await delay(2);
+
   const res = await fetch(process.env.GOOGLE_SCRIPT_PASSWORD_RESET_URL!, {
     method: "POST",
     headers: {

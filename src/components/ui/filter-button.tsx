@@ -17,7 +17,7 @@ export function FilterButton({
       className={cn(
         "border-muted-foreground h-0 rounded-2xl bg-transparent px-3.5 py-4 font-normal",
         {
-          "bg-primary/80 text-primary-foreground hover:bg-primary/70 hover:text-primary-foreground border-primary/80 font-bold":
+          "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground border-primary font-bold":
             isActive,
         },
       )}

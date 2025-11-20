@@ -21,26 +21,28 @@ export function TaskListHeader() {
   ];
 
   return (
-    <div className="mx-auto flex max-w-180 flex-col gap-y-2.5">
+    <>
       <div className="flex flex-row justify-between">
         <h2>Your tasks</h2>
+      </div>
+      <div className="flex flex-row">
+        <div className="flex flex-1 flex-row gap-x-1.5">
+          {categories.map((category, i) => (
+            <FilterButton
+              key={i}
+              isActive={pathname === category.path}
+              onClick={() => router.replace(category.path)}
+            >
+              {category.label}
+            </FilterButton>
+          ))}
+        </div>
         <Button>
           <CirclePlus />
           Add Task
         </Button>
       </div>
-      <div className="flex flex-row gap-x-1.5">
-        {categories.map((category, i) => (
-          <FilterButton
-            key={i}
-            isActive={pathname === category.path}
-            onClick={() => router.replace(category.path)}
-          >
-            {category.label}
-          </FilterButton>
-        ))}
-      </div>
       <hr />
-    </div>
+    </>
   );
 }

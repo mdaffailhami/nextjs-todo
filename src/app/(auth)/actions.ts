@@ -1,6 +1,6 @@
 "use server";
 
-import { delay, generateRandomNumber } from "@/lib/utils";
+import { generateRandomNumber } from "@/lib/utils";
 import { checkHashedText, hashText, sendEmail } from "@/lib/utils/server";
 import { cookies as nextCookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -20,8 +20,6 @@ export async function signUp({
   password: string;
   passwordConfirmation: string;
 }): Promise<{ error: string | null }> {
-  await delay(2);
-
   const cookies = await nextCookies();
 
   try {
@@ -83,8 +81,6 @@ export async function verifySignupCode({
 }: {
   code: string;
 }): Promise<{ error: string | null }> {
-  await delay(2);
-
   const cookies = await nextCookies();
 
   try {
@@ -129,8 +125,6 @@ export async function signIn({
   email: string;
   password: string;
 }): Promise<{ error: string | null }> {
-  await delay(2);
-
   const cookies = await nextCookies();
 
   let token;
@@ -176,8 +170,6 @@ export async function sendPasswordResetEmail({
 }: {
   email: string;
 }): Promise<{ error: string | null }> {
-  await delay(2);
-
   const cookies = await nextCookies();
 
   try {
@@ -229,8 +221,6 @@ export async function verifyPasswordResetCode({
 }: {
   code: string;
 }): Promise<{ error: string | null }> {
-  await delay(2);
-
   const cookies = await nextCookies();
 
   try {
@@ -287,8 +277,6 @@ export async function changePassword({
   password: string;
   passwordConfirmation: string;
 }): Promise<{ error: string | null }> {
-  await delay(2);
-
   const cookies = await nextCookies();
 
   try {

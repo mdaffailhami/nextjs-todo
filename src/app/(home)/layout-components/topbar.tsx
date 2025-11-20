@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,7 +11,8 @@ export function Topbar({ email }: { email: string }) {
           <Image src="/logo.png" alt="logo" width={50} height={50} />
         </Link>
       </section>
-      <section className="flex flex-row items-center gap-x-4">
+      <section className="flex flex-row items-center gap-x-2">
+        <User />
         <span className="font-medium italic">{email}</span>
         <Button
           variant={"ghost"}

@@ -1,17 +1,22 @@
 import "server-only";
+
 import prisma from "../prisma";
 import { hashText } from "../utils/server";
-import { User } from "@/generated/prisma/client";
 import jwt from "jsonwebtoken";
 import { cookies as nextCookies } from "next/headers";
+import { delay } from "../utils";
 
-export async function getUserByEmail(email: string): Promise<User | null> {
+export async function getUserByEmail(email: string) {
+  await delay(2);
+
   const user = await prisma.user.findUnique({ where: { email: email } });
 
   return user;
 }
 
-export async function getSignedInUser(): Promise<User | null> {
+export async function getSignedInUser() {
+  await delay(2);
+
   const cookies = await nextCookies();
 
   try {
@@ -28,7 +33,9 @@ export async function getSignedInUser(): Promise<User | null> {
     if (typeof token !== "object") return null;
 
     // Get user from database
-    const user = await getUserByEmail(token.email);
+    const user = await prisma.user.findUnique({
+      where: { email: token.email },
+    });
 
     // If user doesn't exist
     if (!user) return null;
@@ -45,7 +52,9 @@ export async function createUser({
 }: {
   email: string;
   password: string;
-}): Promise<void> {
+}) {
+  await delay(2);
+
   // Create new user
   await prisma.user.create({
     data: {
@@ -61,7 +70,9 @@ export async function changeUserPassword({
 }: {
   email: string;
   newPassword: string;
-}): Promise<void> {
+}) {
+  await delay(2);
+
   const user = await getUserByEmail(email);
 
   if (!user) throw new Error("User not found");
