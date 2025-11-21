@@ -6,11 +6,9 @@ import { Prisma } from "@/generated/prisma/client";
 import { cookies as nextCookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
-export async function getSignedInUserTasks({
-  category = "all",
-}: {
-  category: "all" | "active" | "completed";
-}) {
+export async function getSignedInUserTasks(
+  category: "all" | "active" | "completed",
+) {
   await delay(2);
 
   const cookies = await nextCookies();

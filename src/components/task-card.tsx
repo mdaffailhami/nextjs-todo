@@ -1,6 +1,3 @@
-"use client";
-
-import { Task } from "@/generated/prisma/browser";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import {
@@ -11,23 +8,56 @@ import {
   ItemMedia,
   ItemTitle,
 } from "./ui/item";
+import { Pencil, Trash } from "lucide-react";
+import { formatDate } from "@/lib/utils";
+import { useState } from "react";
 
-export function TaskCard({ name, deadline, isCompleted }: Task) {
+export type TaskCardProps = {
+  name: string;
+  deadline: Date;
+  isCompleted: boolean;
+  onCheckedChange: (isChecked: boolean) => void;
+};
+
+export function TaskCard({
+  name,
+  deadline,
+  isCompleted,
+  onCheckedChange,
+}: TaskCardProps) {
+  const [isChecked, setIsChecked] = useState(isCompleted);
+
   return (
     <Item variant="outline">
       <ItemMedia>
         <Checkbox
-          checked={isCompleted}
-          onCheckedChange={() => console.log("aowkwk")}
+          checked={isChecked}
+          onCheckedChange={(checked) => {
+            if (typeof checked !== "boolean") return;
+
+            setIsChecked(checked);
+            onCheckedChange(checked);
+          }}
         />
       </ItemMedia>
       <ItemContent>
         <ItemTitle>{name}</ItemTitle>
-        <ItemDescription>{deadline.toString()}</ItemDescription>
+        <ItemDescription>{formatDate(deadline)}</ItemDescription>
       </ItemContent>
       <ItemActions>
-        <Button variant="outline" size="sm">
-          Action
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-destructive hover:text-destructive rounded-full"
+        >
+          <Trash className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-primary hover:text-primary rounded-full"
+        >
+          <Pencil className="h-4 w-4" />
         </Button>
       </ItemActions>
     </Item>

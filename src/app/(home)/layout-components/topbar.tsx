@@ -21,11 +21,11 @@ export function Topbar() {
         <Button
           variant={"ghost"}
           size={"icon-lg"}
-          className="rounded-full"
+          className="text-primary hover:text-primary rounded-full"
           asChild
         >
           <Link href={"/signout"}>
-            <LogOut className="text-primary hover:text-primary size-[65%]" />
+            <LogOut className="size-[65%]" />
           </Link>
         </Button>
       </section>

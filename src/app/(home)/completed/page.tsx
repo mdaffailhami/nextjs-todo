@@ -1,16 +1,8 @@
-import { TaskCard } from "@/components/task-card";
 import { getSignedInUserTasks } from "@/lib/data/tasks";
+import { TaskList } from "../task-list";
 
 export default async function CompletedPage() {
-  const tasks = await getSignedInUserTasks({
-    category: "completed",
-  });
+  const tasks = await getSignedInUserTasks("completed");
 
-  return (
-    <ul className="flex flex-col gap-y-2">
-      {tasks.map((task, i) => (
-        <TaskCard key={i} {...task} />
-      ))}
-    </ul>
-  );
+  return <TaskList tasks={tasks} />;
 }
