@@ -6,12 +6,18 @@ import { delay } from "@/lib/utils";
 import { toast } from "sonner";
 import { markTask } from "@/lib/actions/task";
 
-export function TaskList({ tasks }: { tasks: Task[] }) {
+export function TaskList({
+  type,
+  tasks,
+}: {
+  type: "active" | "completed";
+  tasks: Task[];
+}) {
   // If there is no task at all
   if (!tasks.length)
     return (
       <span className="text-center text-lg font-medium italic">
-        You have no tasks
+        You have no {type} tasks
       </span>
     );
 
@@ -24,6 +30,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
           deadline={task.deadline}
           isCompleted={task.isCompleted}
           onCheckedChange={async (isChecked) => {
+            // Add delay to create an animation-like effect
             await delay(0.5);
 
             try {
@@ -32,11 +39,12 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
                 status: isChecked ? "completed" : "active",
               });
             } catch (error) {
-              console.error(error);
-
-              toast.error("Failed to mark task as completed", {
-                description: (error as Error).message,
-              });
+              toast.error(
+                `Failed to mark task as ${type === "active" ? "completed" : "active"}`,
+                {
+                  description: (error as Error).message,
+                },
+              );
             }
           }}
         />

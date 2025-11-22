@@ -1,24 +1,14 @@
 import "server-only";
 
 import bcrypt from "bcrypt";
-import { delay } from ".";
 import { cookies as nextCookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt from "jsonwebtoken";
-import prisma from "../prisma";
 
-export async function hashText(password: string): Promise<string> {
-  await delay(2);
-
+export async function hashText(text: string): Promise<string> {
   const saltRounds = 12;
 
-  try {
-    const hashedText = await bcrypt.hash(password, saltRounds);
-    return hashedText;
-  } catch (error) {
-    console.error("Error hashing password:", error);
-    throw error;
-  }
+  return await bcrypt.hash(text, saltRounds);
 }
 
 export async function verifyHashedText({
@@ -28,15 +18,7 @@ export async function verifyHashedText({
   text: string;
   hashedText: string;
 }>): Promise<boolean> {
-  await delay(2);
-
-  try {
-    const isMatch = await bcrypt.compare(text, hashedText);
-    return isMatch;
-  } catch (error) {
-    console.error("Error checking text:", error);
-    throw error;
-  }
+  return await bcrypt.compare(text, hashedText);
 }
 
 export async function sendEmail(body: {
@@ -45,9 +27,7 @@ export async function sendEmail(body: {
   text: string;
   html: string;
 }): Promise<void> {
-  await delay(2);
-
-  const res = await fetch(process.env.GOOGLE_SCRIPT_PASSWORD_RESET_URL!, {
+  const res = await fetch(process.env.GOOGLE_SCRIPT_EMAIL_SENDER_URL!, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -72,7 +52,7 @@ export async function verifySession() {
   // Verify session token
   const token = jwt.verify(sessionToken, process.env.JWT_KEY!);
 
-  // Check if token exists and is valid
+  // if token doesn't exist or is invalid
   if (typeof token !== "object") redirect("/signin");
 
   return token as jwt.JwtPayload & { id: string; email: string };

@@ -4,5 +4,5 @@ import { TaskList } from "../task-list";
 export default async function CompletedPage() {
   const tasks = await getTasks("completed");
 
-  return <TaskList tasks={tasks} />;
+  return <TaskList type="completed" tasks={tasks} />;
 }
