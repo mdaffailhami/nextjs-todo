@@ -58,6 +58,7 @@ export function RequestCodeDialog({
               name="email"
               placeholder="Enter your email"
               type="email"
+              autoComplete="off"
               required
             />
           </div>

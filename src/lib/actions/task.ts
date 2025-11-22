@@ -66,3 +66,27 @@ export async function addTask({
     },
   });
 }
+
+export async function editTask({
+  id,
+  name,
+  deadline,
+}: {
+  id: string;
+  name: string;
+  deadline: Date;
+}) {
+  const token = await verifySession();
+
+  // Create task
+  await prisma.task.update({
+    where: {
+      id,
+      user: { email: token.email },
+    },
+    data: {
+      name,
+      deadline,
+    },
+  });
+}

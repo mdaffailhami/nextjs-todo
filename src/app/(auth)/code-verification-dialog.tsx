@@ -89,6 +89,7 @@ export function CodeVerificationDialog({
               name="code"
               placeholder="Enter your verification code"
               type="text"
+              autoComplete="off"
               required
             />
           </div>

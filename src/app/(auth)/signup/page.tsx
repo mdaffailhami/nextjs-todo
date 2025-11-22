@@ -61,6 +61,7 @@ export default function SigninPage() {
                   name="email"
                   type="email"
                   placeholder="Enter your email address"
+                  autoComplete="off"
                   required
                 />
               </div>

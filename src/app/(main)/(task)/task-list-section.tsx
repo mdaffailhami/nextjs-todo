@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { markTask } from "@/lib/actions/task";
 import { useRouter } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { useState } from "react";
+import { EditTaskDialog } from "./edit-task-dialog";
 
 export function TaskListSection({
   type,
@@ -15,6 +17,8 @@ export function TaskListSection({
   tasks: Task[];
 }) {
   const router = useRouter();
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   if (!tasks.length)
     return (
@@ -24,34 +28,49 @@ export function TaskListSection({
     );
 
   return (
-    <ul className="flex flex-col gap-y-2">
-      {tasks.map((task, i) => (
-        <TaskCard
-          key={i}
-          name={task.name}
-          deadline={task.deadline}
-          isCompleted={task.isCompleted}
-          onCheckedChange={async (isChecked) => {
-            try {
-              await markTask({
-                id: task.id,
-                status: isChecked ? "completed" : "active",
-              });
+    <>
+      <ul className="flex flex-col gap-y-2">
+        {tasks.map((task, i) => (
+          <TaskCard
+            key={i}
+            name={task.name}
+            deadline={task.deadline}
+            isCompleted={task.isCompleted}
+            excludeEditButton={type === "completed"}
+            onCheckedChange={async (isChecked) => {
+              try {
+                await markTask({
+                  id: task.id,
+                  status: isChecked ? "completed" : "active",
+                });
 
-              router.refresh();
-            } catch (error) {
-              toast.error(
-                `Failed to mark task as ${type === "active" ? "completed" : "active"}`,
-                {
-                  description: (error as Error).message,
-                },
-              );
+                router.refresh();
+              } catch (error) {
+                toast.error(
+                  `Failed to mark task as ${type === "active" ? "completed" : "active"}`,
+                  {
+                    description: (error as Error).message,
+                  },
+                );
 
-              if (isRedirectError(error)) throw error;
-            }
-          }}
+                if (isRedirectError(error)) throw error;
+              }
+            }}
+            onEditButtonPress={() => {
+              setSelectedTask(task);
+              setIsEditDialogOpen(true);
+            }}
+            onDeleteButtonPress={() => {}}
+          />
+        ))}
+      </ul>
+      {selectedTask && (
+        <EditTaskDialog
+          isOpen={isEditDialogOpen}
+          setIsOpen={setIsEditDialogOpen}
+          task={selectedTask}
         />
-      ))}
-    </ul>
+      )}
+    </>
   );
 }

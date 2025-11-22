@@ -16,14 +16,20 @@ export type TaskCardProps = {
   name: string;
   deadline: Date;
   isCompleted: boolean;
-  onCheckedChange: (isChecked: boolean) => void;
+  excludeEditButton?: boolean;
+  onCheckedChange?: (isChecked: boolean) => void;
+  onEditButtonPress?: () => void;
+  onDeleteButtonPress?: () => void;
 };
 
 export function TaskCard({
   name,
   deadline,
   isCompleted,
+  excludeEditButton = false,
   onCheckedChange,
+  onEditButtonPress,
+  onDeleteButtonPress,
 }: TaskCardProps) {
   const [isChecked, setIsChecked] = useState(isCompleted);
 
@@ -40,7 +46,7 @@ export function TaskCard({
             // Add delay to create an animation-like effect
             await delay(0.3);
 
-            onCheckedChange(checked);
+            onCheckedChange?.(checked);
 
             setIsChecked(!checked);
           }}
@@ -55,16 +61,20 @@ export function TaskCard({
           variant="ghost"
           size="icon"
           className="text-destructive hover:text-destructive rounded-full"
+          onClick={onDeleteButtonPress}
         >
           <Trash className="h-4 w-4" />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-primary hover:text-primary rounded-full"
-        >
-          <Pencil className="h-4 w-4" />
-        </Button>
+        {!excludeEditButton && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-primary hover:text-primary rounded-full"
+            onClick={onEditButtonPress}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+        )}
       </ItemActions>
     </Item>
   );

@@ -1,18 +1,21 @@
 import { FormDialog } from "@/components/form-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addTask } from "@/lib/actions/task";
+import { Task } from "@/generated/prisma/browser";
+import { editTask } from "@/lib/actions/task";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-export function AddTaskDialog({
+export function EditTaskDialog({
   isOpen,
   setIsOpen,
+  task,
 }: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  task: Task;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -21,13 +24,14 @@ export function AddTaskDialog({
   const onSubmit = async (formData: FormData) => {
     startTransition(async () => {
       try {
-        await addTask({
+        await editTask({
+          id: task.id,
           name: formData.get("name") as string,
           deadline: new Date(formData.get("deadline") as string),
         });
 
-        toast("Task added successfully", {
-          description: "You can now see your new task in the list.",
+        toast("Task edited successfully", {
+          description: "You can now see your edited task in the list.",
         });
 
         setIsOpen(false);
@@ -47,9 +51,9 @@ export function AddTaskDialog({
       error={error}
       isPending={isPending}
       onOpenChange={setIsOpen}
-      title="Add new task"
-      description="Enter the new task you want to add"
-      positiveActionText="Add"
+      title="Edit task"
+      description="Edit your existing task"
+      positiveActionText="Save"
       onSubmit={onSubmit}
     >
       <div className="grid gap-4">
@@ -61,6 +65,7 @@ export function AddTaskDialog({
             placeholder="Enter your task"
             type="text"
             autoComplete="off"
+            defaultValue={task.name}
             required
           />
         </div>
@@ -72,6 +77,7 @@ export function AddTaskDialog({
               name="deadline"
               placeholder="Enter your task deadline"
               type="date"
+              defaultValue={task.deadline.toISOString().split("T")[0]}
               required
             />
           </div>
