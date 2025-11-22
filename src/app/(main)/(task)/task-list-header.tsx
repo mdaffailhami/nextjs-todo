@@ -25,7 +25,7 @@ export function TaskListHeader() {
       <div className="flex flex-row justify-between">
         <h2>Your tasks</h2>
       </div>
-      <div className="flex flex-row">
+      <div className="flex h-10 flex-row items-center">
         <div className="flex flex-1 flex-row gap-x-1.5">
           {categories.map((category, i) => (
             <FilterButton
@@ -37,10 +37,12 @@ export function TaskListHeader() {
             </FilterButton>
           ))}
         </div>
-        <Button>
-          <CirclePlus />
-          Add Task
-        </Button>
+        {pathname === "/" && (
+          <Button>
+            <CirclePlus />
+            Add Task
+          </Button>
+        )}
       </div>
       <hr />
     </>
