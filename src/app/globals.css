@@ -133,6 +133,9 @@
 
   body {
     @apply bg-background text-foreground;
+
+    /* Reserves space for the scrollbar, preventing layout shifts */
+    scrollbar-gutter: stable;
   }
 
   h1 {

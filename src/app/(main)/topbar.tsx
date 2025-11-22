@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 export async function Topbar() {
   return (
-    <nav className="bg-background fixed flex h-18 w-full flex-row items-center justify-between border-b-2 px-2 md:px-4">
+    <nav className="bg-background fixed flex h-18 w-screen flex-row items-center justify-between border-b-2 px-2 md:px-4">
       <section>
         <Link href={"/"}>
           <Image src="/logo.png" alt="logo" width={50} height={50} />
