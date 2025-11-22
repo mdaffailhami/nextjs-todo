@@ -2,9 +2,10 @@
 
 import { Task } from "@/generated/prisma/browser";
 import { TaskCard } from "@/components/task-card";
-import { delay } from "@/lib/utils";
 import { toast } from "sonner";
 import { markTask } from "@/lib/actions/task";
+import { useRouter } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export function TaskList({
   type,
@@ -13,7 +14,8 @@ export function TaskList({
   type: "active" | "completed";
   tasks: Task[];
 }) {
-  // If there is no task at all
+  const router = useRouter();
+
   if (!tasks.length)
     return (
       <span className="text-center text-lg font-medium italic">
@@ -30,14 +32,13 @@ export function TaskList({
           deadline={task.deadline}
           isCompleted={task.isCompleted}
           onCheckedChange={async (isChecked) => {
-            // Add delay to create an animation-like effect
-            await delay(0.5);
-
             try {
-              markTask({
+              await markTask({
                 id: task.id,
                 status: isChecked ? "completed" : "active",
               });
+
+              router.refresh();
             } catch (error) {
               toast.error(
                 `Failed to mark task as ${type === "active" ? "completed" : "active"}`,
@@ -45,6 +46,8 @@ export function TaskList({
                   description: (error as Error).message,
                 },
               );
+
+              if (isRedirectError(error)) throw error;
             }
           }}
         />

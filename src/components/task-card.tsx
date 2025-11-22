@@ -9,7 +9,7 @@ import {
   ItemTitle,
 } from "./ui/item";
 import { Pencil, Trash } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { delay, formatDate } from "@/lib/utils";
 import { useState } from "react";
 
 export type TaskCardProps = {
@@ -32,11 +32,17 @@ export function TaskCard({
       <ItemMedia>
         <Checkbox
           checked={isChecked}
-          onCheckedChange={(checked) => {
+          onCheckedChange={async (checked) => {
             if (typeof checked !== "boolean") return;
 
             setIsChecked(checked);
+
+            // Add delay to create an animation-like effect
+            await delay(0.3);
+
             onCheckedChange(checked);
+
+            setIsChecked(!checked);
           }}
         />
       </ItemMedia>
