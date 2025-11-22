@@ -1,7 +1,12 @@
 "use server";
 
 import { generateRandomNumber } from "@/lib/utils";
-import { verifyHashedText, hashText, sendEmail } from "@/lib/utils/server";
+import {
+  verifyHashedText,
+  hashText,
+  sendEmail,
+  verifySession,
+} from "@/lib/utils/server";
 import { cookies as nextCookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import prisma from "../prisma";
@@ -260,4 +265,14 @@ export async function changePassword({
 
   // Delete cookie
   cookies.delete("is_password_reset_verified_token");
+}
+
+export async function signOut(): Promise<void> {
+  const cookies = await nextCookies();
+
+  // Delete cookie
+  cookies.delete("session_token");
+
+  // Redirect to sign in page
+  await verifySession();
 }

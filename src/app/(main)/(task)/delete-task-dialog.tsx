@@ -1,8 +1,6 @@
 import { Dialog } from "@/components/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Task } from "@/generated/prisma/browser";
-import { addTask, deleteTask } from "@/lib/actions/task";
+import { deleteTask } from "@/lib/actions/task";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";

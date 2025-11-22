@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { verifySession } from "@/lib/utils/server";
-import { LogOut, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { SignoutButton } from "./signout-button";
+import { User } from "lucide-react";
 
 export async function Topbar() {
   return (
@@ -15,24 +15,15 @@ export async function Topbar() {
       </section>
       <section className="flex flex-row items-center gap-x-2">
         <Suspense fallback={<p>...</p>}>
-          <UserEmail />
+          <UserEmailSection />
         </Suspense>
-        <Button
-          variant={"ghost"}
-          size={"icon-lg"}
-          className="text-primary hover:text-primary rounded-full"
-          asChild
-        >
-          <Link href={"/signout"}>
-            <LogOut className="size-[65%]" />
-          </Link>
-        </Button>
+        <SignoutButton />
       </section>
     </nav>
   );
 }
 
-async function UserEmail() {
+async function UserEmailSection() {
   const session = await verifySession();
 
   return (
