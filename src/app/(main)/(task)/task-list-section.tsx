@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useState } from "react";
 import { EditTaskDialog } from "./edit-task-dialog";
+import { DeleteTaskDialog } from "./delete-task-dialog";
 
 export function TaskListSection({
   type,
@@ -18,6 +19,7 @@ export function TaskListSection({
 }) {
   const router = useRouter();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   if (!tasks.length)
@@ -60,16 +62,26 @@ export function TaskListSection({
               setSelectedTask(task);
               setIsEditDialogOpen(true);
             }}
-            onDeleteButtonPress={() => {}}
+            onDeleteButtonPress={() => {
+              setSelectedTask(task);
+              setIsDeleteDialogOpen(true);
+            }}
           />
         ))}
       </ul>
       {selectedTask && (
-        <EditTaskDialog
-          isOpen={isEditDialogOpen}
-          setIsOpen={setIsEditDialogOpen}
-          task={selectedTask}
-        />
+        <>
+          <EditTaskDialog
+            isOpen={isEditDialogOpen}
+            setIsOpen={setIsEditDialogOpen}
+            task={selectedTask}
+          />
+          <DeleteTaskDialog
+            isOpen={isDeleteDialogOpen}
+            setIsOpen={setIsDeleteDialogOpen}
+            task={selectedTask}
+          />
+        </>
       )}
     </>
   );

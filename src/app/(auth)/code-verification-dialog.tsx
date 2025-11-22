@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState, useTransition } from "react";
 import { verifyPasswordResetCode, verifySignupCode } from "@/lib/actions/auth";
-import { FormDialog } from "@/components/form-dialog";
+import { Dialog } from "@/components/dialog";
 import { NewPasswordDialog } from "./signin/new-password-dialog";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -71,7 +71,7 @@ export function CodeVerificationDialog({
 
   return (
     <>
-      <FormDialog
+      <Dialog
         isOpen={isOpen}
         error={error}
         isPending={isPending}
@@ -94,7 +94,7 @@ export function CodeVerificationDialog({
             />
           </div>
         </div>
-      </FormDialog>
+      </Dialog>
       {type == "password-reset" && (
         <NewPasswordDialog
           isOpen={isNewPasswordDialogOpen}

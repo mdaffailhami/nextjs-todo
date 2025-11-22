@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState, useTransition } from "react";
 import { requestPasswordResetEmail } from "@/lib/actions/auth";
-import { FormDialog } from "@/components/form-dialog";
+import { Dialog } from "@/components/dialog";
 import { CodeVerificationDialog } from "../code-verification-dialog";
 
 export function RequestCodeDialog({
@@ -40,7 +40,7 @@ export function RequestCodeDialog({
 
   return (
     <>
-      <FormDialog
+      <Dialog
         isOpen={isOpen}
         error={error}
         isPending={isPending}
@@ -63,7 +63,7 @@ export function RequestCodeDialog({
             />
           </div>
         </div>
-      </FormDialog>
+      </Dialog>
       <CodeVerificationDialog
         type="password-reset"
         isOpen={isCodeVerificationDialogOpen}

@@ -1,4 +1,4 @@
-import { FormDialog } from "@/components/form-dialog";
+import { Dialog } from "@/components/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Task } from "@/generated/prisma/browser";
@@ -46,7 +46,7 @@ export function EditTaskDialog({
   };
 
   return (
-    <FormDialog
+    <Dialog
       isOpen={isOpen}
       error={error}
       isPending={isPending}
@@ -83,6 +83,6 @@ export function EditTaskDialog({
           </div>
         </div>
       </div>
-    </FormDialog>
+    </Dialog>
   );
 }

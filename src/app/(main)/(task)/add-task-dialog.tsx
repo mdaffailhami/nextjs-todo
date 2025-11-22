@@ -1,4 +1,4 @@
-import { FormDialog } from "@/components/form-dialog";
+import { Dialog } from "@/components/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addTask } from "@/lib/actions/task";
@@ -42,7 +42,7 @@ export function AddTaskDialog({
   };
 
   return (
-    <FormDialog
+    <Dialog
       isOpen={isOpen}
       error={error}
       isPending={isPending}
@@ -77,6 +77,6 @@ export function AddTaskDialog({
           </div>
         </div>
       </div>
-    </FormDialog>
+    </Dialog>
   );
 }

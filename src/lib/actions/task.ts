@@ -94,3 +94,15 @@ export async function editTask({
     },
   });
 }
+
+export async function deleteTask({ id }: { id: string }) {
+  const token = await verifySession();
+
+  // Delete task
+  await prisma.task.delete({
+    where: {
+      id,
+      user: { email: token.email },
+    },
+  });
+}

@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState, useTransition } from "react";
 import { changePassword } from "@/lib/actions/auth";
-import { FormDialog } from "@/components/form-dialog";
+import { Dialog } from "@/components/dialog";
 import { toast } from "sonner";
 
 export function NewPasswordDialog({
@@ -42,7 +42,7 @@ export function NewPasswordDialog({
   };
 
   return (
-    <FormDialog
+    <Dialog
       isOpen={isOpen}
       error={error}
       isPending={isPending}
@@ -74,6 +74,6 @@ export function NewPasswordDialog({
           />
         </div>
       </div>
-    </FormDialog>
+    </Dialog>
   );
 }

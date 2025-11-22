@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
+  Dialog as ShadcnDialog,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -12,7 +12,8 @@ import { PendingBar } from "./ui/pending-bar";
 import { Alert, AlertTitle } from "./ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 
-type FormDialogProps = {
+type DialogProps = {
+  type?: "normal" | "destructive";
   isOpen: boolean;
   error: string | null;
   isPending: boolean;
@@ -22,10 +23,11 @@ type FormDialogProps = {
   positiveActionText?: string;
   onOpenChange: (isOpen: boolean) => void;
   onSubmit: (formData: FormData) => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
-export function FormDialog({
+export function Dialog({
+  type = "normal",
   isOpen,
   error,
   isPending,
@@ -36,9 +38,9 @@ export function FormDialog({
   onOpenChange,
   onSubmit,
   children,
-}: FormDialogProps) {
+}: DialogProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <ShadcnDialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <form action={onSubmit} className="flex flex-col gap-y-4">
           <DialogHeader>
@@ -59,10 +61,15 @@ export function FormDialog({
                 {negativeActionText}
               </Button>
             </DialogClose>
-            <Button type="submit">{positiveActionText}</Button>
+            <Button
+              type="submit"
+              variant={type === "destructive" ? "destructive" : "default"}
+            >
+              {positiveActionText}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>
+    </ShadcnDialog>
   );
 }
