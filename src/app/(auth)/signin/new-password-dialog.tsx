@@ -3,10 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
-import { useState, useTransition } from "react";
-import { changePassword } from "../actions";
+import { useEffect, useState, useTransition } from "react";
+import { changePassword } from "@/lib/actions/auth";
 import { FormDialog } from "@/components/form-dialog";
 import { toast } from "sonner";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export function NewPasswordDialog({
   isOpen,
@@ -18,22 +19,29 @@ export function NewPasswordDialog({
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  // Reset error state on unmount
+  useEffect(() => () => setError(null), []);
+
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const { error } = await changePassword({
-        password: formData.get("password") as string,
-        passwordConfirmation: formData.get("password-confirmation") as string,
-      });
-
-      setError(error);
-
-      if (!error) {
-        setIsOpen(false);
-
-        // Show success message
-        toast("Password has been updated", {
-          description: "You can now sign in with your new password.",
+      try {
+        await changePassword({
+          password: formData.get("password") as string,
+          passwordConfirmation: formData.get("password-confirmation") as string,
         });
+      } catch (error) {
+        if (isRedirectError(error)) {
+          // Close current dialog
+          setIsOpen(false);
+
+          // Show success message
+          toast("Password has been updated", {
+            description: "You can now sign in with your new password.",
+          });
+
+          throw error;
+        }
+        setError((error as Error).message);
       }
     });
   };
@@ -41,14 +49,7 @@ export function NewPasswordDialog({
   return (
     <FormDialog
       isOpen={isOpen}
-      onOpenChange={(isOpen) => {
-        setIsOpen(isOpen);
-
-        // Reset state if the dialog is closed
-        if (!isOpen) {
-          setError(null);
-        }
-      }}
+      onOpenChange={setIsOpen}
       title="Set your new password"
       description="Enter the new password you want to use"
       positiveActionText="Submit"

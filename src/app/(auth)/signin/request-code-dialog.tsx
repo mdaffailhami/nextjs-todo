@@ -3,8 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
-import { useState, useTransition } from "react";
-import { sendPasswordResetEmail } from "../actions";
+import { useEffect, useState, useTransition } from "react";
+import { sendPasswordResetEmail } from "@/lib/actions/auth";
 import { FormDialog } from "@/components/form-dialog";
 import { CodeVerificationDialog } from "../code-verification-dialog";
 
@@ -20,17 +20,23 @@ export function RequestCodeDialog({
   const [isCodeVerificationDialogOpen, setIsCodeVerificationDialogOpen] =
     useState(false);
 
+  // Reset error state on unmount
+  useEffect(() => () => setError(null), []);
+
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const { error } = await sendPasswordResetEmail({
-        email: formData.get("email") as string,
-      });
+      try {
+        await sendPasswordResetEmail({
+          email: formData.get("email") as string,
+        });
 
-      setError(error);
-
-      if (!error) {
+        // Close current dialog
         setIsOpen(false);
+
+        // Open code verification dialog
         setIsCodeVerificationDialogOpen(true);
+      } catch (error) {
+        setError((error as Error).message);
       }
     });
   };
@@ -39,15 +45,7 @@ export function RequestCodeDialog({
     <>
       <FormDialog
         isOpen={isOpen}
-        onOpenChange={(isOpen) => {
-          setIsOpen(isOpen);
-
-          // Reset state if the dialog is closed
-          if (!isOpen) {
-            setError(null);
-            setIsCodeVerificationDialogOpen(false);
-          }
-        }}
+        onOpenChange={setIsOpen}
         title="Request verification code"
         description="Enter your email below, so we can send you a verification code."
         onSubmit={onSubmit}

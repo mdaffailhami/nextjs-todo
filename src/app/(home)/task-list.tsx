@@ -3,10 +3,18 @@
 import { Task } from "@/generated/prisma/browser";
 import { TaskCard } from "@/components/task-card";
 import { delay } from "@/lib/utils";
-import { markTask } from "./actions";
 import { toast } from "sonner";
+import { markTask } from "@/lib/actions/task";
 
 export function TaskList({ tasks }: { tasks: Task[] }) {
+  // If there is no task at all
+  if (!tasks.length)
+    return (
+      <span className="text-center text-lg font-medium italic">
+        You have no tasks
+      </span>
+    );
+
   return (
     <ul className="flex flex-col gap-y-2">
       {tasks.map((task, i) => (
@@ -27,8 +35,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
               console.error(error);
 
               toast.error("Failed to mark task as completed", {
-                description:
-                  "Please try again, if the problem persists please contact support.",
+                description: (error as Error).message,
               });
             }
           }}

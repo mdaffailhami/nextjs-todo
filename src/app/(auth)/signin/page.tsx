@@ -1,5 +1,15 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Link } from "@/components/ui/link";
+import { useEffect, useState, useTransition } from "react";
+import { AlertCircleIcon } from "lucide-react";
+import { PendingBar } from "@/components/ui/pending-bar";
+import { RequestCodeDialog } from "./request-code-dialog";
+import { signIn } from "@/lib/actions/auth";
 import {
   Card,
   CardContent,
@@ -7,28 +17,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Link } from "@/components/ui/link";
-import { useState, useTransition } from "react";
-import { AlertCircleIcon } from "lucide-react";
-import { PendingBar } from "@/components/ui/pending-bar";
-import { RequestCodeDialog } from "./request-code-dialog";
-import { signIn } from "../actions";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export default function SigninPage() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isRequestCodeDialogOpen, setIsRequestCodeDialogOpen] = useState(false);
 
+  // Reset error state on unmount
+  useEffect(() => () => setError(null), []);
+
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const { error } = await signIn({
-        email: formData.get("email") as string,
-        password: formData.get("password") as string,
-      });
-      setError(error);
+      try {
+        await signIn({
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+        });
+      } catch (error) {
+        if (isRedirectError(error)) throw error;
+
+        setError((error as Error).message);
+      }
     });
   };
 

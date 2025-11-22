@@ -11,8 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "@/components/ui/link";
-import { useState, useTransition } from "react";
-import { signUp } from "../actions";
+import { useEffect, useState, useTransition } from "react";
+import { signUp } from "@/lib/actions/auth";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
@@ -24,18 +24,21 @@ export default function SigninPage() {
   const [isCodeVerificationDialogOpen, setIsCodeVerificationDialogOpen] =
     useState(false);
 
+  // Reset error state on unmount
+  useEffect(() => () => setError(null), []);
+
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const { error } = await signUp({
-        email: formData.get("email") as string,
-        password: formData.get("password") as string,
-        passwordConfirmation: formData.get("password-confirmation") as string,
-      });
+      try {
+        await signUp({
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+          passwordConfirmation: formData.get("password-confirmation") as string,
+        });
 
-      setError(error);
-
-      if (!error) {
         setIsCodeVerificationDialogOpen(true);
+      } catch (error) {
+        setError((error as Error).message);
       }
     });
   };

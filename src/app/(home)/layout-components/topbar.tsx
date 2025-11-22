@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { getSignedInUser } from "@/lib/data/user";
+import { verifySession } from "@/lib/utils/server";
 import { LogOut, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-export function Topbar() {
+export async function Topbar() {
   return (
     <nav className="bg-background fixed flex h-18 w-full flex-row items-center justify-between border-b-2 px-2 md:px-4">
       <section>
@@ -34,14 +33,12 @@ export function Topbar() {
 }
 
 async function UserEmail() {
-  const user = await getSignedInUser();
-
-  if (!user) return redirect("/signin");
+  const session = await verifySession();
 
   return (
     <>
       <User />
-      <span className="font-medium italic">{user.email}</span>
+      <span className="font-medium italic">{session.email}</span>
     </>
   );
 }

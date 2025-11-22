@@ -3,12 +3,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
-import { useState, useTransition } from "react";
-import { verifyPasswordResetCode, verifySignupCode } from "./actions";
+import { useEffect, useState, useTransition } from "react";
+import { verifyPasswordResetCode, verifySignupCode } from "@/lib/actions/auth";
 import { FormDialog } from "@/components/form-dialog";
 import { NewPasswordDialog } from "./signin/new-password-dialog";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 /**
  * Renders a dialog for users to verify a code, either for password reset or signup.
@@ -22,44 +22,51 @@ export function CodeVerificationDialog({
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }) {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isNewPasswordDialogOpen, setIsNewPasswordDialogOpen] = useState(false);
 
+  // Reset error state on unmount
+  useEffect(() => () => setError(null), []);
+
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      let error;
       if (type == "signup") {
-        const res = await verifySignupCode({
-          code: formData.get("code") as string,
-        });
+        try {
+          // Verify code
+          await verifySignupCode({
+            code: formData.get("code") as string,
+          });
+        } catch (error) {
+          // If success
+          if (isRedirectError(error)) {
+            // Close current dialog
+            setIsOpen(false);
 
-        error = res.error;
+            // Show success message
+            toast("Account created successfully", {
+              description: "You can now sign in with your account.",
+            });
+
+            throw error;
+          }
+
+          setError((error as Error).message);
+        }
       } else {
-        const res = await verifyPasswordResetCode({
-          code: formData.get("code") as string,
-        });
-
-        error = res.error;
-      }
-
-      setError(error);
-
-      if (!error) {
-        setIsOpen(false);
-
-        // Open new password dialog if the type is password reset
-        if (type == "password-reset") setIsNewPasswordDialogOpen(true);
-        // Show success message if the type is signup
-        else {
-          // Show success message
-          toast("Account created successfully", {
-            description: "You can now sign in with your account.",
+        try {
+          // Verify code
+          await verifyPasswordResetCode({
+            code: formData.get("code") as string,
           });
 
-          // Push to signin page
-          router.push("/signin");
+          // Close current dialog
+          setIsOpen(false);
+
+          // Open new password dialog
+          setIsNewPasswordDialogOpen(true);
+        } catch (error) {
+          setError((error as Error).message);
         }
       }
     });
@@ -69,15 +76,7 @@ export function CodeVerificationDialog({
     <>
       <FormDialog
         isOpen={isOpen}
-        onOpenChange={(isOpen) => {
-          setIsOpen(isOpen);
-
-          // Reset state if the dialog is closed
-          if (!isOpen) {
-            setError(null);
-            setIsNewPasswordDialogOpen(false);
-          }
-        }}
+        onOpenChange={setIsOpen}
         title="Verify your code"
         description="Enter the verification code sent to your email"
         positiveActionText="Verify"

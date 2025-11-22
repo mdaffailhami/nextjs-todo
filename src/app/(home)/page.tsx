@@ -1,8 +1,8 @@
-import { getSignedInUserTasks } from "@/lib/data/tasks";
+import { getTasks } from "@/lib/actions/task";
 import { TaskList } from "./task-list";
 
 export default async function HomePage() {
-  const tasks = await getSignedInUserTasks("active");
+  const tasks = await getTasks("active");
 
   return <TaskList tasks={tasks} />;
 }

@@ -2,6 +2,10 @@ import "server-only";
 
 import bcrypt from "bcrypt";
 import { delay } from ".";
+import { cookies as nextCookies } from "next/headers";
+import { redirect } from "next/navigation";
+import jwt from "jsonwebtoken";
+import prisma from "../prisma";
 
 export async function hashText(password: string): Promise<string> {
   await delay(2);
@@ -17,7 +21,7 @@ export async function hashText(password: string): Promise<string> {
   }
 }
 
-export async function checkHashedText({
+export async function verifyHashedText({
   text,
   hashedText,
 }: Readonly<{
@@ -54,4 +58,22 @@ export async function sendEmail(body: {
   const { error, message } = await res.json();
 
   if (error) throw new Error(message);
+}
+
+export async function verifySession() {
+  const cookies = await nextCookies();
+
+  // Get session token from cookies
+  const sessionToken = cookies.get("session_token")?.value;
+
+  // If session token doesn't exist
+  if (!sessionToken) redirect("/signin");
+
+  // Verify session token
+  const token = jwt.verify(sessionToken, process.env.JWT_KEY!);
+
+  // Check if token exists and is valid
+  if (typeof token !== "object") redirect("/signin");
+
+  return token as jwt.JwtPayload & { id: string; email: string };
 }
