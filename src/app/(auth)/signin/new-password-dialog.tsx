@@ -7,7 +7,6 @@ import { useEffect, useState, useTransition } from "react";
 import { changePassword } from "@/lib/actions/auth";
 import { FormDialog } from "@/components/form-dialog";
 import { toast } from "sonner";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export function NewPasswordDialog({
   isOpen,
@@ -29,18 +28,17 @@ export function NewPasswordDialog({
           password: formData.get("password") as string,
           passwordConfirmation: formData.get("password-confirmation") as string,
         });
+
+        // If password change success
+
+        // Close current dialog
+        setIsOpen(false);
+
+        // Show success message
+        toast("Password has been updated", {
+          description: "You can now sign in with your new password.",
+        });
       } catch (error) {
-        if (isRedirectError(error)) {
-          // Close current dialog
-          setIsOpen(false);
-
-          // Show success message
-          toast("Password has been updated", {
-            description: "You can now sign in with your new password.",
-          });
-
-          throw error;
-        }
         setError((error as Error).message);
       }
     });

@@ -8,7 +8,7 @@ import { verifyPasswordResetCode, verifySignupCode } from "@/lib/actions/auth";
 import { FormDialog } from "@/components/form-dialog";
 import { NewPasswordDialog } from "./signin/new-password-dialog";
 import { toast } from "sonner";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { useRouter } from "next/navigation";
 
 /**
  * Renders a dialog for users to verify a code, either for password reset or signup.
@@ -22,6 +22,7 @@ export function CodeVerificationDialog({
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isNewPasswordDialogOpen, setIsNewPasswordDialogOpen] = useState(false);
@@ -33,26 +34,25 @@ export function CodeVerificationDialog({
     startTransition(async () => {
       if (type == "signup") {
         try {
-          // Verify code
           await verifySignupCode({
             code: formData.get("code") as string,
           });
         } catch (error) {
-          // If success
-          if (isRedirectError(error)) {
-            // Close current dialog
-            setIsOpen(false);
-
-            // Show success message
-            toast("Account created successfully", {
-              description: "You can now sign in with your account.",
-            });
-
-            throw error;
-          }
-
           setError((error as Error).message);
         }
+
+        // If signup success
+
+        // Close current dialog
+        setIsOpen(false);
+
+        // Show success message
+        toast("Account created successfully", {
+          description: "You can now sign in with your account.",
+        });
+
+        // Redirect to signin page
+        router.push("/signin");
       } else {
         try {
           // Verify code

@@ -3,7 +3,6 @@
 import { generateRandomNumber } from "@/lib/utils";
 import { verifyHashedText, hashText, sendEmail } from "@/lib/utils/server";
 import { cookies as nextCookies } from "next/headers";
-import { redirect } from "next/navigation";
 import jwt from "jsonwebtoken";
 import prisma from "../prisma";
 
@@ -100,9 +99,6 @@ export async function verifySignupCode({
       hashedPassword: await hashText(payload.password),
     },
   });
-
-  // If signup success, redirect to signin page
-  redirect("/signin");
 }
 
 export async function signIn({
@@ -144,9 +140,6 @@ export async function signIn({
     path: "/",
     maxAge: 60 * 60 * 24 * 7, // 7 days
   });
-
-  // If signin success, redirect to home page
-  redirect("/");
 }
 
 export async function sendPasswordResetEmail({
@@ -267,7 +260,4 @@ export async function changePassword({
 
   // Delete cookie
   cookies.delete("is_password_reset_verified_token");
-
-  // If password reset success, redirect to signin page
-  redirect("/signin");
 }

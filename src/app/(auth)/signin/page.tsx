@@ -17,9 +17,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { useRouter } from "next/navigation";
 
 export default function SigninPage() {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isRequestCodeDialogOpen, setIsRequestCodeDialogOpen] = useState(false);
@@ -34,9 +35,10 @@ export default function SigninPage() {
           email: formData.get("email") as string,
           password: formData.get("password") as string,
         });
-      } catch (error) {
-        if (isRedirectError(error)) throw error;
 
+        // If signin success, redirect to home page
+        router.push("/");
+      } catch (error) {
         setError((error as Error).message);
       }
     });
