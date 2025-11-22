@@ -1,7 +1,5 @@
+import { TaskListLoading } from "../task-list-loading";
+
 export default function Loading() {
-  return (
-    <div className="flex h-full items-center justify-center">
-      <p className="text-lg text-gray-500">Loading...</p>
-    </div>
-  );
+  return <TaskListLoading />;
 }

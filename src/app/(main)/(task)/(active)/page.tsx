@@ -1,8 +1,8 @@
 import { getTasks } from "@/lib/actions/task";
-import { TaskList } from "../task-list";
+import { TaskListSection } from "../task-list-section";
 
 export default async function HomePage() {
   const tasks = await getTasks("active");
 
-  return <TaskList type="active" tasks={tasks} />;
+  return <TaskListSection type="active" tasks={tasks} />;
 }

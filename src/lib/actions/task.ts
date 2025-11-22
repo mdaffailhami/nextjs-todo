@@ -47,3 +47,22 @@ export async function markTask({
     },
   });
 }
+
+export async function addTask({
+  name,
+  deadline,
+}: {
+  name: string;
+  deadline: Date;
+}) {
+  const token = await verifySession();
+
+  // Create task
+  await prisma.task.create({
+    data: {
+      name,
+      deadline,
+      user: { connect: { email: token.email } },
+    },
+  });
+}

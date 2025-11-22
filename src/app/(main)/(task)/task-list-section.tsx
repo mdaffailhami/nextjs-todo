@@ -7,7 +7,7 @@ import { markTask } from "@/lib/actions/task";
 import { useRouter } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
-export function TaskList({
+export function TaskListSection({
   type,
   tasks,
 }: {
