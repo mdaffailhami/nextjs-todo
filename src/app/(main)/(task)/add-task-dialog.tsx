@@ -1,10 +1,7 @@
 import { FormDialog } from "@/components/form-dialog";
-import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PendingBar } from "@/components/ui/pending-bar";
 import { addTask } from "@/lib/actions/task";
-import { AlertCircleIcon } from "lucide-react";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -22,9 +19,9 @@ export function AddTaskDialog({
   const [isPending, startTransition] = useTransition();
 
   const onSubmit = async (formData: FormData) => {
-    try {
-      startTransition(() => {
-        addTask({
+    startTransition(async () => {
+      try {
+        await addTask({
           name: formData.get("name") as string,
           deadline: new Date(formData.get("deadline") as string),
         });
@@ -34,18 +31,21 @@ export function AddTaskDialog({
         });
 
         setIsOpen(false);
-        router.refresh();
-      });
-    } catch (error) {
-      if (isRedirectError(error)) throw error;
 
-      setError((error as Error).message);
-    }
+        router.refresh();
+      } catch (error) {
+        if (isRedirectError(error)) throw error;
+
+        setError((error as Error).message);
+      }
+    });
   };
 
   return (
     <FormDialog
       isOpen={isOpen}
+      error={error}
+      isPending={isPending}
       onOpenChange={setIsOpen}
       title="Add new task"
       description="Enter the new task you want to add"
@@ -69,18 +69,11 @@ export function AddTaskDialog({
             <Input
               id="deadline"
               name="deadline"
-              placeholder="Enter your deadline"
+              placeholder="Enter your task deadline"
               type="date"
               required
             />
           </div>
-          {isPending && <PendingBar />}
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircleIcon />
-              <AlertTitle>{error}</AlertTitle>
-            </Alert>
-          )}
         </div>
       </div>
     </FormDialog>

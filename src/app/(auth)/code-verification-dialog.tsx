@@ -1,8 +1,5 @@
-import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PendingBar } from "@/components/ui/pending-bar";
-import { AlertCircleIcon } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { verifyPasswordResetCode, verifySignupCode } from "@/lib/actions/auth";
 import { FormDialog } from "@/components/form-dialog";
@@ -76,6 +73,8 @@ export function CodeVerificationDialog({
     <>
       <FormDialog
         isOpen={isOpen}
+        error={error}
+        isPending={isPending}
         onOpenChange={setIsOpen}
         title="Verify your code"
         description="Enter the verification code sent to your email"
@@ -92,13 +91,6 @@ export function CodeVerificationDialog({
               type="text"
               required
             />
-            {isPending && <PendingBar />}
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircleIcon />
-                <AlertTitle>{error}</AlertTitle>
-              </Alert>
-            )}
           </div>
         </div>
       </FormDialog>

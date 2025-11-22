@@ -7,7 +7,7 @@ export default async function TaskLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="min-h-screen space-y-8">
+    <main className="mb-14 min-h-screen space-y-8">
       <Hero />
       <div className="mx-auto flex max-w-180 flex-col gap-y-3">
         <TaskListHeader />

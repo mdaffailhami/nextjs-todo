@@ -8,9 +8,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { PendingBar } from "./ui/pending-bar";
+import { Alert, AlertTitle } from "./ui/alert";
+import { AlertCircleIcon } from "lucide-react";
 
 type FormDialogProps = {
   isOpen: boolean;
+  error: string | null;
+  isPending: boolean;
   title: string;
   description: string;
   negativeActionText?: string;
@@ -22,10 +27,12 @@ type FormDialogProps = {
 
 export function FormDialog({
   isOpen,
+  error,
+  isPending,
   title,
   description,
   negativeActionText = "Cancel",
-  positiveActionText = "Send",
+  positiveActionText = "Submit",
   onOpenChange,
   onSubmit,
   children,
@@ -39,6 +46,13 @@ export function FormDialog({
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
           {children}
+          {isPending && <PendingBar />}
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircleIcon />
+              <AlertTitle>{error}</AlertTitle>
+            </Alert>
+          )}
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline" type="button">

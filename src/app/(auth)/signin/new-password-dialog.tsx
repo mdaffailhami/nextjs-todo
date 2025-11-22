@@ -1,8 +1,5 @@
-import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PendingBar } from "@/components/ui/pending-bar";
-import { AlertCircleIcon } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { changePassword } from "@/lib/actions/auth";
 import { FormDialog } from "@/components/form-dialog";
@@ -47,6 +44,8 @@ export function NewPasswordDialog({
   return (
     <FormDialog
       isOpen={isOpen}
+      error={error}
+      isPending={isPending}
       onOpenChange={setIsOpen}
       title="Set your new password"
       description="Enter the new password you want to use"
@@ -73,13 +72,6 @@ export function NewPasswordDialog({
             type="password"
             required
           />
-          {isPending && <PendingBar />}
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircleIcon />
-              <AlertTitle>{error}</AlertTitle>
-            </Alert>
-          )}
         </div>
       </div>
     </FormDialog>

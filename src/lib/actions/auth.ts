@@ -142,7 +142,7 @@ export async function signIn({
   });
 }
 
-export async function sendPasswordResetEmail({
+export async function requestPasswordResetEmail({
   email,
 }: {
   email: string;

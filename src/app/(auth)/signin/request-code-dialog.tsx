@@ -1,10 +1,7 @@
-import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PendingBar } from "@/components/ui/pending-bar";
-import { AlertCircleIcon } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
-import { sendPasswordResetEmail } from "@/lib/actions/auth";
+import { requestPasswordResetEmail } from "@/lib/actions/auth";
 import { FormDialog } from "@/components/form-dialog";
 import { CodeVerificationDialog } from "../code-verification-dialog";
 
@@ -26,7 +23,7 @@ export function RequestCodeDialog({
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
       try {
-        await sendPasswordResetEmail({
+        await requestPasswordResetEmail({
           email: formData.get("email") as string,
         });
 
@@ -45,9 +42,12 @@ export function RequestCodeDialog({
     <>
       <FormDialog
         isOpen={isOpen}
+        error={error}
+        isPending={isPending}
         onOpenChange={setIsOpen}
         title="Request verification code"
         description="Enter your email below, so we can send you a verification code."
+        positiveActionText="Request"
         onSubmit={onSubmit}
       >
         <div className="grid gap-4">
@@ -60,13 +60,6 @@ export function RequestCodeDialog({
               type="email"
               required
             />
-            {isPending && <PendingBar />}
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircleIcon />
-                <AlertTitle>{error}</AlertTitle>
-              </Alert>
-            )}
           </div>
         </div>
       </FormDialog>
