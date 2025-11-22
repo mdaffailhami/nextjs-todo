@@ -22,6 +22,10 @@ export async function getTasks(
 
   const tasks = await prisma.task.findMany({
     where: whereClause,
+    orderBy: {
+      // Sort by the closest deadline first
+      deadline: "asc",
+    },
   });
 
   return tasks;
