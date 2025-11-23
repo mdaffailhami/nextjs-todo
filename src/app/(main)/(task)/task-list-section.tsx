@@ -21,7 +21,7 @@ export function TaskListSection({
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  let isPending = false;
+  const [isPending, setIsPending] = useState(false);
 
   if (!tasks.length)
     return (
@@ -43,7 +43,7 @@ export function TaskListSection({
             onCheckedChange={async (isChecked) => {
               if (isPending) return;
 
-              isPending = true;
+              setIsPending(true);
               try {
                 await markTask({
                   id: task.id,
@@ -67,8 +67,9 @@ export function TaskListSection({
                 );
 
                 if (isRedirectError(error)) throw error;
+              } finally {
+                setIsPending(false);
               }
-              isPending = false;
             }}
             onEditButtonPress={() => {
               setSelectedTask(task);

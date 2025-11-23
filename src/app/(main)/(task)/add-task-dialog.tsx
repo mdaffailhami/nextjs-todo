@@ -70,6 +70,7 @@ export function AddTaskDialog({
             <Input
               id="deadline"
               name="deadline"
+              // Make the calendar logo dark if it's dark mode
               className="dark:scheme-dark"
               placeholder="Enter your task deadline"
               type="date"

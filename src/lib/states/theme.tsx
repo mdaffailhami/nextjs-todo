@@ -15,20 +15,22 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  // Initialize theme from localStorage using lazy initializer
   const [theme, setTheme] = useState<ThemeContextType["theme"] | null>(null);
 
   useLayoutEffect(() => {
-    const storedTheme = window.localStorage.getItem("theme");
+    // If first render
+    if (!theme) {
+      const storedTheme = window.localStorage.getItem("theme");
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: setting initial theme from localStorage on first render to prevent flash
+      setTheme(storedTheme === "dark" ? "dark" : "light");
+    }
 
-    setTheme(storedTheme === "dark" ? "dark" : "light");
-  }, []);
-
-  useLayoutEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     window.localStorage.setItem("theme", theme || "light");
   }, [theme]);
 
-  // Prevent flash when page load
+  // Prevent page flash when the page loads
   if (!theme) return null;
 
   return (
