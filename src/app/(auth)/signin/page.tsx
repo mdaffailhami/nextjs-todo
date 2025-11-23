@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function SigninPage() {
   const router = useRouter();
@@ -34,6 +35,10 @@ export default function SigninPage() {
         await signIn({
           email: formData.get("email") as string,
           password: formData.get("password") as string,
+        });
+
+        toast.success("Sign-in successful", {
+          description: `Successfully signed in as ${formData.get("email")}`,
         });
 
         // If signin success, redirect to home page

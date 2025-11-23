@@ -26,7 +26,7 @@ export function AddTaskDialog({
           deadline: new Date(formData.get("deadline") as string),
         });
 
-        toast("Task added successfully", {
+        toast.success("Task added successfully", {
           description: "You can now see your new task in the list.",
         });
 
@@ -70,6 +70,7 @@ export function AddTaskDialog({
             <Input
               id="deadline"
               name="deadline"
+              className="dark:scheme-dark"
               placeholder="Enter your task deadline"
               type="date"
               required

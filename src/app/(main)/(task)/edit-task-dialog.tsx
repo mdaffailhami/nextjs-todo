@@ -30,7 +30,7 @@ export function EditTaskDialog({
           deadline: new Date(formData.get("deadline") as string),
         });
 
-        toast("Task edited successfully", {
+        toast.success("Task edited successfully", {
           description: "You can now see your edited task in the list.",
         });
 
@@ -75,6 +75,8 @@ export function EditTaskDialog({
             <Input
               id="deadline"
               name="deadline"
+              // Make the calendar logo dark if it's dark mode
+              className="dark:scheme-dark"
               placeholder="Enter your task deadline"
               type="date"
               defaultValue={task.deadline.toISOString().split("T")[0]}

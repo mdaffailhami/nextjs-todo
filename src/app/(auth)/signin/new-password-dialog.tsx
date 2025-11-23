@@ -32,7 +32,7 @@ export function NewPasswordDialog({
         setIsOpen(false);
 
         // Show success message
-        toast("Password has been updated", {
+        toast.success("Password has been updated", {
           description: "You can now sign in with your new password.",
         });
       } catch (error) {

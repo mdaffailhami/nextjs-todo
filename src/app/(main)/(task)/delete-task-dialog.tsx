@@ -24,7 +24,7 @@ export function DeleteTaskDialog({
       try {
         await deleteTask({ id: task.id });
 
-        toast("Task deleted successfully", {
+        toast.success("Task deleted successfully", {
           description: `Your task "${task.name}" has been deleted.`,
         });
 

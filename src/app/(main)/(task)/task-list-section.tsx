@@ -50,6 +50,13 @@ export function TaskListSection({
                   status: isChecked ? "completed" : "active",
                 });
 
+                toast.success(
+                  `Task marked as ${isChecked ? "completed" : "active"}`,
+                  {
+                    description: `You can now see your ${isChecked ? "completed" : "active"} tasks in the ${isChecked ? "completed" : "active"} tab`,
+                  },
+                );
+
                 router.refresh();
               } catch (error) {
                 toast.error(

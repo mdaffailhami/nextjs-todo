@@ -44,7 +44,7 @@ export function CodeVerificationDialog({
         setIsOpen(false);
 
         // Show success message
-        toast("Account created successfully", {
+        toast.success("Account created successfully", {
           description: "You can now sign in with your account.",
         });
 
