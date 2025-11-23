@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Button } from "./button";
 
 export function FilterButton({
   children,
@@ -10,20 +9,19 @@ export function FilterButton({
 }: {
   children: React.ReactNode;
   isActive: boolean;
-} & React.ComponentPropsWithoutRef<typeof Button>) {
+} & React.HTMLAttributes<HTMLButtonElement>) {
   return (
-    <Button
-      variant={"outline"}
+    <button
       className={cn(
-        "border-muted-foreground h-0 rounded-2xl bg-transparent px-3.5 py-4 font-normal",
+        "border-border hover:bg-primary/10 flex h-0 items-center rounded-2xl border-2 bg-transparent px-3.5 py-4 font-normal hover:cursor-pointer",
         {
-          "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground border-primary font-bold":
+          "bg-primary text-primary-foreground hover:bg-primary/70 hover:text-primary-foreground border-primary hover:border-primary/10 font-bold":
             isActive,
         },
       )}
       {...props}
     >
       {children}
-    </Button>
+    </button>
   );
 }

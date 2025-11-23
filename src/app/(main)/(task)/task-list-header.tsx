@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Moon, Sun } from "lucide-react";
 import { FilterButton } from "@/components/ui/filter-button";
 import { usePathname, useRouter } from "next/navigation";
 import { AddTaskDialog } from "./add-task-dialog";
 import { useState } from "react";
+import { useTheme } from "@/lib/states/theme";
 
 export function TaskListHeader() {
   const pathname = usePathname();
@@ -40,12 +41,15 @@ export function TaskListHeader() {
             </FilterButton>
           ))}
         </div>
-        {pathname === "/" && (
-          <Button onClick={() => setIsAddTaskDialogOpen(true)}>
-            <CirclePlus />
-            Add Task
-          </Button>
-        )}
+        <div className="flex flex-row gap-x-2">
+          <ThemeToggler />
+          {pathname === "/" && (
+            <Button onClick={() => setIsAddTaskDialogOpen(true)}>
+              <CirclePlus />
+              Add Task
+            </Button>
+          )}
+        </div>
       </div>
       <hr />
       <AddTaskDialog
@@ -53,5 +57,24 @@ export function TaskListHeader() {
         setIsOpen={setIsAddTaskDialogOpen}
       />
     </>
+  );
+}
+
+export function ThemeToggler() {
+  const { theme, setTheme } = useTheme();
+
+  const onClick = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  return (
+    <Button
+      variant={"outline"}
+      onClick={onClick}
+      className="border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground relative flex size-9.5 items-center justify-center rounded-md border shadow-sm transition-colors hover:cursor-pointer"
+    >
+      <Sun className="size-5 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+      <Moon className="absolute size-5 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+    </Button>
   );
 }
