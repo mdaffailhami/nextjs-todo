@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <footer className="bg-muted py-6 text-center">
-      <div className="mx-auto max-w-130 px-3">
+      <div className="mx-auto max-w-130 px-4">
         <span className="text-2xl font-medium">NextJS Todo</span>
         <p className="mt-2">
           Your ultimate task management solution built with Next.js.

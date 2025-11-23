@@ -9,7 +9,7 @@ export default async function TaskLayout({
   return (
     <main className="mb-14 min-h-screen space-y-8">
       <Hero />
-      <div className="mx-auto flex max-w-180 flex-col gap-y-3">
+      <div className="mx-auto flex max-w-180 flex-col gap-y-3 px-3 md:px-0">
         <TaskListHeader />
         {children}
       </div>

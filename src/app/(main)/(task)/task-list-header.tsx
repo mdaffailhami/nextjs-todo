@@ -44,10 +44,24 @@ export function TaskListHeader() {
         <div className="flex flex-row gap-x-2">
           <ThemeToggler />
           {pathname === "/" && (
-            <Button onClick={() => setIsAddTaskDialogOpen(true)}>
-              <CirclePlus />
-              Add Task
-            </Button>
+            <>
+              {/* Desktop button */}
+              <Button
+                onClick={() => setIsAddTaskDialogOpen(true)}
+                className="max-md:hidden"
+              >
+                <CirclePlus />
+                Add Task
+              </Button>
+              {/* Mobile button */}
+              <Button
+                onClick={() => setIsAddTaskDialogOpen(true)}
+                className="fixed right-2.5 bottom-2.5 px-5! py-5! md:hidden"
+              >
+                <CirclePlus />
+                Add Task
+              </Button>
+            </>
           )}
         </div>
       </div>
