@@ -1,7 +1,11 @@
+import { TaskCardSkeleton } from "@/components/task-card";
+
 export function TaskListLoading() {
   return (
-    <div className="flex h-full items-center justify-center">
-      <p className="text-lg text-gray-500">Loading...</p>
-    </div>
+    <ul className="flex flex-col gap-y-2">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <TaskCardSkeleton key={i} />
+      ))}
+    </ul>
   );
 }

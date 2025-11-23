@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import {
@@ -11,6 +13,7 @@ import {
 import { Pencil, Trash } from "lucide-react";
 import { delay, formatDate } from "@/lib/utils";
 import { useState } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 export type TaskCardProps = {
   name: string;
@@ -75,6 +78,32 @@ export function TaskCard({
             <Pencil className="h-4 w-4" />
           </Button>
         )}
+      </ItemActions>
+    </Item>
+  );
+}
+
+export function TaskCardSkeleton() {
+  return (
+    <Item variant="outline">
+      <ItemMedia>
+        <Checkbox checked={false} onCheckedChange={() => {}} />
+      </ItemMedia>
+      <ItemContent>
+        <ItemTitle>
+          <Skeleton className="h-4 w-24" />
+        </ItemTitle>
+        <ItemDescription>
+          <Skeleton className="h-4 w-20" />
+        </ItemDescription>
+      </ItemContent>
+      <ItemActions>
+        <Button variant="ghost" size="icon">
+          <Trash className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="icon">
+          <Pencil className="h-4 w-4" />
+        </Button>
       </ItemActions>
     </Item>
   );
