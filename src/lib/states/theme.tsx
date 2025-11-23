@@ -18,14 +18,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<ThemeContextType["theme"] | null>(null);
 
   useLayoutEffect(() => {
-    console.log("1");
     const storedTheme = window.localStorage.getItem("theme");
 
     setTheme(storedTheme === "dark" ? "dark" : "light");
   }, []);
 
   useLayoutEffect(() => {
-    console.log("2");
     document.documentElement.classList.toggle("dark", theme === "dark");
     window.localStorage.setItem("theme", theme || "light");
   }, [theme]);
