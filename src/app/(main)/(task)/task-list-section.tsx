@@ -7,8 +7,11 @@ import { markTask } from "@/lib/actions/task";
 import { useRouter } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useState } from "react";
-import { EditTaskDialog } from "./edit-task-dialog";
-import { DeleteTaskDialog } from "./delete-task-dialog";
+import { AddTaskDialog } from "./dialogs/add-task-dialog";
+import { EditTaskDialog } from "./dialogs/edit-task-dialog";
+import { DeleteTaskDialog } from "./dialogs/delete-task-dialog";
+import { useIsEditTaskDialogOpen } from "./states/is-edit-task-dialog-open";
+import { useIsDeleteTaskDialogOpen } from "./states/is-delete-task-dialog-open";
 
 export function TaskListSection({
   type,
@@ -18,8 +21,8 @@ export function TaskListSection({
   tasks: Task[];
 }) {
   const router = useRouter();
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const { setIsEditTaskDialogOpen } = useIsEditTaskDialogOpen();
+  const { setIsDeleteTaskDialogOpen } = useIsDeleteTaskDialogOpen();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isPending, setIsPending] = useState(false);
 
@@ -73,27 +76,20 @@ export function TaskListSection({
             }}
             onEditButtonPress={() => {
               setSelectedTask(task);
-              setIsEditDialogOpen(true);
+              setIsEditTaskDialogOpen(true);
             }}
             onDeleteButtonPress={() => {
               setSelectedTask(task);
-              setIsDeleteDialogOpen(true);
+              setIsDeleteTaskDialogOpen(true);
             }}
           />
         ))}
       </ul>
+      <AddTaskDialog />
       {selectedTask && (
         <>
-          <EditTaskDialog
-            isOpen={isEditDialogOpen}
-            setIsOpen={setIsEditDialogOpen}
-            task={selectedTask}
-          />
-          <DeleteTaskDialog
-            isOpen={isDeleteDialogOpen}
-            setIsOpen={setIsDeleteDialogOpen}
-            task={selectedTask}
-          />
+          <EditTaskDialog task={selectedTask} />
+          <DeleteTaskDialog task={selectedTask} />
         </>
       )}
     </>

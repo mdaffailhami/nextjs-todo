@@ -5,17 +5,12 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { useIsDeleteTaskDialogOpen } from "../states/is-delete-task-dialog-open";
 
-export function DeleteTaskDialog({
-  isOpen,
-  setIsOpen,
-  task,
-}: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  task: Task;
-}) {
+export function DeleteTaskDialog({ task }: { task: Task }) {
   const router = useRouter();
+  const { isDeleteTaskDialogOpen, setIsDeleteTaskDialogOpen } =
+    useIsDeleteTaskDialogOpen();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -28,7 +23,7 @@ export function DeleteTaskDialog({
           description: `Your task "${task.name}" has been deleted.`,
         });
 
-        setIsOpen(false);
+        setIsDeleteTaskDialogOpen(false);
 
         router.refresh();
       } catch (error) {
@@ -42,10 +37,10 @@ export function DeleteTaskDialog({
   return (
     <Dialog
       type="destructive"
-      isOpen={isOpen}
+      isOpen={isDeleteTaskDialogOpen}
       error={error}
       isPending={isPending}
-      onOpenChange={setIsOpen}
+      onOpenChange={setIsDeleteTaskDialogOpen}
       title="Delete task"
       description={`Are you sure you want to delete this "${task.name}" task?`}
       positiveActionText="Delete"

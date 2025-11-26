@@ -6,15 +6,12 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { useIsAddTaskDialogOpen } from "../states/is-add-task-dialog-open";
 
-export function AddTaskDialog({
-  isOpen,
-  setIsOpen,
-}: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}) {
+export function AddTaskDialog() {
   const router = useRouter();
+  const { isAddTaskDialogOpen, setIsAddTaskDialogOpen } =
+    useIsAddTaskDialogOpen();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -30,7 +27,7 @@ export function AddTaskDialog({
           description: "You can now see your new task in the list.",
         });
 
-        setIsOpen(false);
+        setIsAddTaskDialogOpen(false);
 
         router.refresh();
       } catch (error) {
@@ -43,10 +40,10 @@ export function AddTaskDialog({
 
   return (
     <Dialog
-      isOpen={isOpen}
+      isOpen={isAddTaskDialogOpen}
       error={error}
       isPending={isPending}
-      onOpenChange={setIsOpen}
+      onOpenChange={setIsAddTaskDialogOpen}
       title="Add new task"
       description="Enter the new task you want to add"
       positiveActionText="Add"

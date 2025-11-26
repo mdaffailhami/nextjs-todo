@@ -4,14 +4,13 @@ import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
 import { FilterButton } from "@/components/ui/filter-button";
 import { usePathname, useRouter } from "next/navigation";
-import { AddTaskDialog } from "./add-task-dialog";
-import { useState } from "react";
 import { ThemeToggler } from "@/components/theme-toggler";
+import { useIsAddTaskDialogOpen } from "./states/is-add-task-dialog-open";
 
 export function TaskListHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
+  const { setIsAddTaskDialogOpen } = useIsAddTaskDialogOpen();
 
   const categories = [
     {
@@ -66,10 +65,6 @@ export function TaskListHeader() {
         </div>
       </div>
       <hr />
-      <AddTaskDialog
-        isOpen={isAddTaskDialogOpen}
-        setIsOpen={setIsAddTaskDialogOpen}
-      />
     </>
   );
 }

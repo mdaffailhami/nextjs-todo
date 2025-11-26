@@ -1,5 +1,6 @@
 import { Hero } from "./hero";
 import { TaskListHeader } from "./task-list-header";
+import TaskProviders from "./providers";
 
 export default async function TaskLayout({
   children,
@@ -7,12 +8,14 @@ export default async function TaskLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="mb-14 min-h-screen space-y-8">
-      <Hero />
-      <div className="mx-auto flex max-w-180 flex-col gap-y-3 px-3 md:px-0">
-        <TaskListHeader />
-        {children}
-      </div>
-    </main>
+    <TaskProviders>
+      <main className="mb-14 min-h-screen space-y-8">
+        <Hero />
+        <div className="mx-auto flex max-w-180 flex-col gap-y-3 px-3 md:px-0">
+          <TaskListHeader />
+          {children}
+        </div>
+      </main>
+    </TaskProviders>
   );
 }

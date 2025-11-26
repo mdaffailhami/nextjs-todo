@@ -7,17 +7,12 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { useIsEditTaskDialogOpen } from "../states/is-edit-task-dialog-open";
 
-export function EditTaskDialog({
-  isOpen,
-  setIsOpen,
-  task,
-}: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  task: Task;
-}) {
+export function EditTaskDialog({ task }: { task: Task }) {
   const router = useRouter();
+  const { isEditTaskDialogOpen, setIsEditTaskDialogOpen } =
+    useIsEditTaskDialogOpen();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -34,7 +29,7 @@ export function EditTaskDialog({
           description: "You can now see your edited task in the list.",
         });
 
-        setIsOpen(false);
+        setIsEditTaskDialogOpen(false);
 
         router.refresh();
       } catch (error) {
@@ -47,10 +42,10 @@ export function EditTaskDialog({
 
   return (
     <Dialog
-      isOpen={isOpen}
+      isOpen={isEditTaskDialogOpen}
       error={error}
       isPending={isPending}
-      onOpenChange={setIsOpen}
+      onOpenChange={setIsEditTaskDialogOpen}
       title="Edit task"
       description="Edit your existing task"
       positiveActionText="Save"
