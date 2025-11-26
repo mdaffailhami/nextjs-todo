@@ -2,8 +2,7 @@ import { Dialog } from "@/components/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Task } from "@/generated/prisma/browser";
-import { editTask } from "@/lib/actions/task";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { editTask } from "@/app/(main)/(task)/actions";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -18,25 +17,24 @@ export function EditTaskDialog({ task }: { task: Task }) {
 
   const onSubmit = async (formData: FormData) => {
     startTransition(async () => {
-      try {
-        await editTask({
-          id: task.id,
-          name: formData.get("name") as string,
-          deadline: new Date(formData.get("deadline") as string),
-        });
+      const response = await editTask({
+        id: task.id,
+        name: formData.get("name") as string,
+        deadline: new Date(formData.get("deadline") as string),
+      });
 
-        toast.success("Task edited successfully", {
-          description: "You can now see your edited task in the list.",
-        });
-
-        setIsEditTaskDialogOpen(false);
-
-        router.refresh();
-      } catch (error) {
-        if (isRedirectError(error)) throw error;
-
-        setError((error as Error).message);
+      if (response.isError) {
+        setError(response.message);
+        return;
       }
+
+      toast.success(response.message, {
+        description: "You can now see your edited task in the list.",
+      });
+
+      setIsEditTaskDialogOpen(false);
+
+      router.refresh();
     });
   };
 

@@ -1,8 +1,7 @@
 import { Dialog } from "@/components/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addTask } from "@/lib/actions/task";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { addTask } from "@/app/(main)/(task)/actions";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -17,24 +16,23 @@ export function AddTaskDialog() {
 
   const onSubmit = async (formData: FormData) => {
     startTransition(async () => {
-      try {
-        await addTask({
-          name: formData.get("name") as string,
-          deadline: new Date(formData.get("deadline") as string),
-        });
+      const response = await addTask({
+        name: formData.get("name") as string,
+        deadline: new Date(formData.get("deadline") as string),
+      });
 
-        toast.success("Task added successfully", {
-          description: "You can now see your new task in the list.",
-        });
-
-        setIsAddTaskDialogOpen(false);
-
-        router.refresh();
-      } catch (error) {
-        if (isRedirectError(error)) throw error;
-
-        setError((error as Error).message);
+      if (response.isError) {
+        setError(response.message);
+        return;
       }
+
+      toast.success(response.message, {
+        description: "You can now see your new task in the list.",
+      });
+
+      setIsAddTaskDialogOpen(false);
+
+      router.refresh();
     });
   };
 

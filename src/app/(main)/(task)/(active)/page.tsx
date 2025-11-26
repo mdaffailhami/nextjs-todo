@@ -1,8 +1,10 @@
-import { getTasks } from "@/lib/actions/task";
+import { getTasks } from "@/app/(main)/(task)/actions";
 import { TaskListSection } from "../task-list-section";
 
 export default async function HomePage() {
-  const tasks = await getTasks("active");
+  const response = await getTasks("active");
 
-  return <TaskListSection type="active" tasks={tasks} />;
+  if (response.isError) throw new Error(response.message);
+
+  return <TaskListSection type="active" tasks={response.data} />;
 }

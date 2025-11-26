@@ -1,8 +1,10 @@
-import { getTasks } from "@/lib/actions/task";
+import { getTasks } from "@/app/(main)/(task)/actions";
 import { TaskListSection } from "../task-list-section";
 
 export default async function CompletedPage() {
-  const tasks = await getTasks("completed");
+  const response = await getTasks("completed");
 
-  return <TaskListSection type="completed" tasks={tasks} />;
+  if (response.isError) throw new Error(response.message);
+
+  return <TaskListSection type="completed" tasks={response.data} />;
 }

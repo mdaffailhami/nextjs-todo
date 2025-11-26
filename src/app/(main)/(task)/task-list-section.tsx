@@ -3,9 +3,8 @@
 import { Task } from "@/generated/prisma/browser";
 import { TaskCard } from "@/components/task-card";
 import { toast } from "sonner";
-import { markTask } from "@/lib/actions/task";
+import { markTask } from "@/app/(main)/(task)/actions";
 import { useRouter } from "next/navigation";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useState } from "react";
 import { AddTaskDialog } from "./dialogs/add-task-dialog";
 import { EditTaskDialog } from "./dialogs/edit-task-dialog";
@@ -47,32 +46,26 @@ export function TaskListSection({
               if (isPending) return;
 
               setIsPending(true);
-              try {
-                await markTask({
-                  id: task.id,
-                  status: isChecked ? "completed" : "active",
+
+              const response = await markTask({
+                id: task.id,
+                status: isChecked ? "completed" : "active",
+              });
+
+              if (response.isError) {
+                toast.error("Failed to mark task", {
+                  description: response.message,
                 });
-
-                toast.success(
-                  `Task marked as ${isChecked ? "completed" : "active"}`,
-                  {
-                    description: `You can now see your ${isChecked ? "completed" : "active"} tasks in the ${isChecked ? "completed" : "active"} tab`,
-                  },
-                );
-
-                router.refresh();
-              } catch (error) {
-                toast.error(
-                  `Failed to mark task as ${type === "active" ? "completed" : "active"}`,
-                  {
-                    description: (error as Error).message,
-                  },
-                );
-
-                if (isRedirectError(error)) throw error;
-              } finally {
                 setIsPending(false);
+                return;
               }
+
+              toast.success(response.message, {
+                description: `You can now see your ${isChecked ? "completed" : "active"} tasks in the ${isChecked ? "completed" : "active"} tab`,
+              });
+
+              router.refresh();
+              setIsPending(false);
             }}
             onEditButtonPress={() => {
               setSelectedTask(task);

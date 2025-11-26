@@ -1,7 +1,6 @@
 import { Dialog } from "@/components/dialog";
 import { Task } from "@/generated/prisma/browser";
-import { deleteTask } from "@/lib/actions/task";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { deleteTask } from "@/app/(main)/(task)/actions";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -16,21 +15,20 @@ export function DeleteTaskDialog({ task }: { task: Task }) {
 
   const onSubmit = async () => {
     startTransition(async () => {
-      try {
-        await deleteTask({ id: task.id });
+      const response = await deleteTask({ id: task.id });
 
-        toast.success("Task deleted successfully", {
-          description: `Your task "${task.name}" has been deleted.`,
-        });
-
-        setIsDeleteTaskDialogOpen(false);
-
-        router.refresh();
-      } catch (error) {
-        if (isRedirectError(error)) throw error;
-
-        setError((error as Error).message);
+      if (response.isError) {
+        setError(response.message);
+        return;
       }
+
+      toast.success(response.message, {
+        description: `Your task "${task.name}" has been deleted.`,
+      });
+
+      setIsDeleteTaskDialogOpen(false);
+
+      router.refresh();
     });
   };
 
