@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NextJS E-commerce",
+  title: "NextJS Todo",
   description: "Your ultimate task management solution built with Next.js.",
 };
 

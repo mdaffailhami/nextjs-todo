@@ -8,7 +8,6 @@ import { Link } from "@/components/ui/link";
 import { useEffect, useState, useTransition } from "react";
 import { AlertCircleIcon } from "lucide-react";
 import { PendingBar } from "@/components/ui/pending-bar";
-import { RequestCodeDialog } from "./request-code-dialog";
 import { signIn } from "@/lib/actions/auth";
 import {
   Card,
@@ -19,12 +18,15 @@ import {
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { RequestCodeDialog } from "../dialogs/request-code-dialog";
+import { useIsRequestCodeDialogOpen } from "../states/is-request-code-dialog-open";
 
 export default function SigninPage() {
+  const { setIsRequestCodeDialogOpen } = useIsRequestCodeDialogOpen();
+
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [isRequestCodeDialogOpen, setIsRequestCodeDialogOpen] = useState(false);
 
   // Reset error state on unmount
   useEffect(() => () => setError(null), []);
@@ -51,6 +53,7 @@ export default function SigninPage() {
 
   return (
     <>
+      <RequestCodeDialog />
       <form action={onSubmit} className="mx-auto flex w-full justify-center">
         <Card className="w-full max-w-sm">
           <CardHeader>
@@ -110,10 +113,6 @@ export default function SigninPage() {
           </CardFooter>
         </Card>
       </form>
-      <RequestCodeDialog
-        isOpen={isRequestCodeDialogOpen}
-        setIsOpen={setIsRequestCodeDialogOpen}
-      />
     </>
   );
 }

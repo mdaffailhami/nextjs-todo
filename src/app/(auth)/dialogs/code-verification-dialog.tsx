@@ -3,26 +3,27 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState, useTransition } from "react";
 import { verifyPasswordResetCode, verifySignupCode } from "@/lib/actions/auth";
 import { Dialog } from "@/components/dialog";
-import { NewPasswordDialog } from "./signin/new-password-dialog";
+import { NewPasswordDialog } from "./new-password-dialog";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useIsCodeVerificationDialogOpen } from "../states/is-code-verification-dialog-open";
+import { useIsNewPasswordDialogOpen } from "../states/is-new-password-dialog-open";
 
 /**
  * Renders a dialog for users to verify a code, either for password reset or signup.
  */
 export function CodeVerificationDialog({
   type,
-  isOpen,
-  setIsOpen,
 }: {
   type: "password-reset" | "signup";
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
 }) {
+  const { isCodeVerificationDialogOpen, setIsCodeVerificationDialogOpen } =
+    useIsCodeVerificationDialogOpen();
+  const { setIsNewPasswordDialogOpen } = useIsNewPasswordDialogOpen();
+
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [isNewPasswordDialogOpen, setIsNewPasswordDialogOpen] = useState(false);
 
   // Reset error state on unmount
   useEffect(() => () => setError(null), []);
@@ -41,7 +42,7 @@ export function CodeVerificationDialog({
         // If signup success
 
         // Close current dialog
-        setIsOpen(false);
+        setIsCodeVerificationDialogOpen(false);
 
         // Show success message
         toast.success("Account created successfully", {
@@ -58,7 +59,7 @@ export function CodeVerificationDialog({
           });
 
           // Close current dialog
-          setIsOpen(false);
+          setIsCodeVerificationDialogOpen(false);
 
           // Open new password dialog
           setIsNewPasswordDialogOpen(true);
@@ -71,11 +72,12 @@ export function CodeVerificationDialog({
 
   return (
     <>
+      {type == "password-reset" && <NewPasswordDialog />}
       <Dialog
-        isOpen={isOpen}
+        isOpen={isCodeVerificationDialogOpen}
         error={error}
         isPending={isPending}
-        onOpenChange={setIsOpen}
+        onOpenChange={setIsCodeVerificationDialogOpen}
         title="Verify your code"
         description="Enter the verification code sent to your email"
         positiveActionText="Verify"
@@ -95,12 +97,6 @@ export function CodeVerificationDialog({
           </div>
         </div>
       </Dialog>
-      {type == "password-reset" && (
-        <NewPasswordDialog
-          isOpen={isNewPasswordDialogOpen}
-          setIsOpen={setIsNewPasswordDialogOpen}
-        />
-      )}
     </>
   );
 }

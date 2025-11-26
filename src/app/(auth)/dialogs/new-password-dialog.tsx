@@ -4,14 +4,12 @@ import { useEffect, useState, useTransition } from "react";
 import { changePassword } from "@/lib/actions/auth";
 import { Dialog } from "@/components/dialog";
 import { toast } from "sonner";
+import { useIsNewPasswordDialogOpen } from "../states/is-new-password-dialog-open";
 
-export function NewPasswordDialog({
-  isOpen,
-  setIsOpen,
-}: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}) {
+export function NewPasswordDialog() {
+  const { isNewPasswordDialogOpen, setIsNewPasswordDialogOpen } =
+    useIsNewPasswordDialogOpen();
+
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -29,7 +27,7 @@ export function NewPasswordDialog({
         // If password change success
 
         // Close current dialog
-        setIsOpen(false);
+        setIsNewPasswordDialogOpen(false);
 
         // Show success message
         toast.success("Password has been updated", {
@@ -43,10 +41,10 @@ export function NewPasswordDialog({
 
   return (
     <Dialog
-      isOpen={isOpen}
+      isOpen={isNewPasswordDialogOpen}
       error={error}
       isPending={isPending}
-      onOpenChange={setIsOpen}
+      onOpenChange={setIsNewPasswordDialogOpen}
       title="Set your new password"
       description="Enter the new password you want to use"
       positiveActionText="Submit"

@@ -3,19 +3,17 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState, useTransition } from "react";
 import { requestPasswordResetEmail } from "@/lib/actions/auth";
 import { Dialog } from "@/components/dialog";
-import { CodeVerificationDialog } from "../code-verification-dialog";
+import { useIsRequestCodeDialogOpen } from "../states/is-request-code-dialog-open";
+import { CodeVerificationDialog } from "./code-verification-dialog";
+import { useIsCodeVerificationDialogOpen } from "../states/is-code-verification-dialog-open";
 
-export function RequestCodeDialog({
-  isOpen,
-  setIsOpen,
-}: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}) {
+export function RequestCodeDialog() {
+  const { isRequestCodeDialogOpen, setIsRequestCodeDialogOpen } =
+    useIsRequestCodeDialogOpen();
+
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [isCodeVerificationDialogOpen, setIsCodeVerificationDialogOpen] =
-    useState(false);
+  const { setIsCodeVerificationDialogOpen } = useIsCodeVerificationDialogOpen();
 
   // Reset error state on unmount
   useEffect(() => () => setError(null), []);
@@ -28,7 +26,7 @@ export function RequestCodeDialog({
         });
 
         // Close current dialog
-        setIsOpen(false);
+        setIsRequestCodeDialogOpen(false);
 
         // Open code verification dialog
         setIsCodeVerificationDialogOpen(true);
@@ -40,11 +38,12 @@ export function RequestCodeDialog({
 
   return (
     <>
+      <CodeVerificationDialog type="password-reset" />
       <Dialog
-        isOpen={isOpen}
+        isOpen={isRequestCodeDialogOpen}
         error={error}
         isPending={isPending}
-        onOpenChange={setIsOpen}
+        onOpenChange={setIsRequestCodeDialogOpen}
         title="Request verification code"
         description="Enter your email below, so we can send you a verification code."
         positiveActionText="Request"
@@ -64,11 +63,6 @@ export function RequestCodeDialog({
           </div>
         </div>
       </Dialog>
-      <CodeVerificationDialog
-        type="password-reset"
-        isOpen={isCodeVerificationDialogOpen}
-        setIsOpen={setIsCodeVerificationDialogOpen}
-      />
     </>
   );
 }

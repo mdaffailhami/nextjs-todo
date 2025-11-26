@@ -16,13 +16,13 @@ import { signUp } from "@/lib/actions/auth";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { CodeVerificationDialog } from "../code-verification-dialog";
+import { CodeVerificationDialog } from "../dialogs/code-verification-dialog";
+import { useIsCodeVerificationDialogOpen } from "../states/is-code-verification-dialog-open";
 
 export default function SigninPage() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [isCodeVerificationDialogOpen, setIsCodeVerificationDialogOpen] =
-    useState(false);
+  const { setIsCodeVerificationDialogOpen } = useIsCodeVerificationDialogOpen();
 
   // Reset error state on unmount
   useEffect(() => () => setError(null), []);
@@ -45,6 +45,7 @@ export default function SigninPage() {
 
   return (
     <>
+      <CodeVerificationDialog type="signup" />
       <form action={onSubmit} className="mx-auto flex w-full justify-center">
         <Card className="w-full max-w-sm">
           <CardHeader>
@@ -104,11 +105,6 @@ export default function SigninPage() {
           </CardFooter>
         </Card>
       </form>
-      <CodeVerificationDialog
-        type="signup"
-        isOpen={isCodeVerificationDialogOpen}
-        setIsOpen={setIsCodeVerificationDialogOpen}
-      />
     </>
   );
 }
