@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "@/lib/states/theme";
+import { useTheme } from "@/app/states/theme";
 import { Button } from "./ui/button";
 import { Moon, Sun } from "lucide-react";
 
