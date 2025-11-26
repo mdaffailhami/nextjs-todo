@@ -5,7 +5,7 @@ import { TaskCard } from "@/components/task-card";
 import { toast } from "sonner";
 import { markTask } from "@/app/(main)/(task)/actions";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useActionState, useEffect, useState, startTransition } from "react";
 import { AddTaskDialog } from "./dialogs/add-task-dialog";
 import { EditTaskDialog } from "./dialogs/edit-task-dialog";
 import { DeleteTaskDialog } from "./dialogs/delete-task-dialog";
@@ -23,7 +23,21 @@ export function TaskListSection({
   const { setIsEditTaskDialogOpen } = useIsEditTaskDialogOpen();
   const { setIsDeleteTaskDialogOpen } = useIsDeleteTaskDialogOpen();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [isPending, setIsPending] = useState(false);
+
+  const [_, markTaskReq, isMarkTaskPending] = useActionState(
+    async (_: unknown, params: Parameters<typeof markTask>[0]) => {
+      const response = await markTask(params);
+
+      if (response.isError) {
+        toast.error(response.message);
+      } else {
+        toast.success(response.message);
+      }
+
+      router.refresh();
+    },
+    null,
+  );
 
   if (!tasks.length)
     return (
@@ -35,37 +49,22 @@ export function TaskListSection({
   return (
     <>
       <ul className="flex flex-col gap-y-2">
-        {tasks.map((task, i) => (
+        {tasks.map((task) => (
           <TaskCard
-            key={i}
+            key={task.id}
             name={task.name}
             deadline={task.deadline}
             isCompleted={task.isCompleted}
             excludeEditButton={type === "completed"}
-            onCheckedChange={async (isChecked) => {
-              if (isPending) return;
+            onCheckedChange={(isChecked) => {
+              if (isMarkTaskPending) return;
 
-              setIsPending(true);
-
-              const response = await markTask({
-                id: task.id,
-                status: isChecked ? "completed" : "active",
-              });
-
-              if (response.isError) {
-                toast.error("Failed to mark task", {
-                  description: response.message,
+              startTransition(() => {
+                markTaskReq({
+                  id: task.id,
+                  status: isChecked ? "completed" : "active",
                 });
-                setIsPending(false);
-                return;
-              }
-
-              toast.success(response.message, {
-                description: `You can now see your ${isChecked ? "completed" : "active"} tasks in the ${isChecked ? "completed" : "active"} tab`,
               });
-
-              router.refresh();
-              setIsPending(false);
             }}
             onEditButtonPress={() => {
               setSelectedTask(task);

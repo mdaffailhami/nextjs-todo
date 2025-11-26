@@ -6,9 +6,11 @@ import { verifySession } from "@/lib/utils/server";
 import { ServerResponse } from "@/lib/types";
 import { getErrorMessage } from "@/lib/utils";
 
-export async function getTasks(
-  category: "all" | "active" | "completed" = "all",
-): Promise<ServerResponse<Task[]>> {
+export async function getTasks({
+  category = "all",
+}: {
+  category?: "all" | "active" | "completed";
+}): Promise<ServerResponse<Task[]>> {
   const token = await verifySession();
 
   try {

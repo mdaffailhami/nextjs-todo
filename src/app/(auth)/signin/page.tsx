@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Link } from "@/components/ui/link";
-import { useEffect, useState, useTransition } from "react";
+import { useActionState } from "react";
 import { AlertCircleIcon } from "lucide-react";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { signIn } from "@/app/(auth)/actions";
@@ -25,37 +25,30 @@ export default function SigninPage() {
   const { setIsRequestCodeDialogOpen } = useIsRequestCodeDialogOpen();
 
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
 
-  // Reset error state on unmount
-  useEffect(() => () => setError(null), []);
+  const [signInRes, signInReq, isSignInPending] = useActionState(
+    async (_: unknown, formData: FormData) => {
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
 
-  const onSubmit = (formData: FormData) => {
-    startTransition(async () => {
-      const response = await signIn({
-        email: formData.get("email") as string,
-        password: formData.get("password") as string,
-      });
+      const response = await signIn({ email, password });
 
-      if (response.isError) {
-        setError(response.message);
-        return;
-      }
+      if (response.isError) return response;
 
       toast.success(response.message, {
-        description: `Successfully signed in as ${formData.get("email")}`,
+        description: `Successfully signed in as ${email}`,
       });
 
-      // If signin success, redirect to home page
       router.push("/");
-    });
-  };
+      return response;
+    },
+    undefined,
+  );
 
   return (
     <>
       <RequestCodeDialog />
-      <form action={onSubmit} className="mx-auto flex w-full justify-center">
+      <form action={signInReq} className="mx-auto flex w-full justify-center">
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle className="text-primary text-center text-2xl">
@@ -101,11 +94,11 @@ export default function SigninPage() {
             <Button type="submit" className="w-full">
               Sign In
             </Button>
-            {isPending && <PendingBar />}
-            {error && (
+            {isSignInPending && <PendingBar />}
+            {signInRes?.isError && (
               <Alert variant="destructive">
                 <AlertCircleIcon />
-                <AlertTitle>{error}</AlertTitle>
+                <AlertTitle>{signInRes.message}</AlertTitle>
               </Alert>
             )}
             <p className="text-muted-foreground">

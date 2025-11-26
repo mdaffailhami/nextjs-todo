@@ -20,9 +20,9 @@ export type TaskCardProps = {
   deadline: Date;
   isCompleted: boolean;
   excludeEditButton?: boolean;
-  onCheckedChange?: (isChecked: boolean) => void;
-  onEditButtonPress?: () => void;
-  onDeleteButtonPress?: () => void;
+  onCheckedChange?(isChecked: boolean): void;
+  onEditButtonPress?(): void;
+  onDeleteButtonPress?(): void;
 };
 
 export function TaskCard({
@@ -46,12 +46,10 @@ export function TaskCard({
 
             setIsChecked(checked);
 
-            // Add delay to create an animation-like effect
+            // Add delay to let the checkbox animation finish
             await delay(0.3);
 
             onCheckedChange?.(checked);
-
-            setIsChecked(!checked);
           }}
         />
       </ItemMedia>
@@ -87,23 +85,15 @@ export function TaskCardSkeleton() {
   return (
     <Item variant="outline">
       <ItemMedia>
-        <Checkbox checked={false} onCheckedChange={() => {}} />
+        <Skeleton className="h-4 w-4" />
       </ItemMedia>
       <ItemContent>
-        <ItemTitle>
-          <Skeleton className="h-4 w-24" />
-        </ItemTitle>
-        <ItemDescription>
-          <Skeleton className="h-4 w-20" />
-        </ItemDescription>
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
       </ItemContent>
       <ItemActions>
-        <Button variant="ghost" size="icon">
-          <Trash className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <Pencil className="h-4 w-4" />
-        </Button>
+        <Skeleton className="h-4 w-4" />
+        <Skeleton className="h-4 w-4" />
       </ItemActions>
     </Item>
   );
