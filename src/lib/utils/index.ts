@@ -24,3 +24,10 @@ export function formatDate(date: Date): string {
     year: "numeric",
   });
 }
+
+export function getErrorMessage(
+  error: unknown,
+  fallbackMessage: string = "An unexpected error occurred",
+): string {
+  return error instanceof Error ? error.message : fallbackMessage;
+}

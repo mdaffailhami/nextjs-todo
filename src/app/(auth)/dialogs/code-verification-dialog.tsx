@@ -1,7 +1,10 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState, useTransition } from "react";
-import { verifyPasswordResetCode, verifySignupCode } from "@/lib/actions/auth";
+import {
+  verifyPasswordResetCode,
+  verifySignupCode,
+} from "@/app/(auth)/actions";
 import { Dialog } from "@/components/dialog";
 import { NewPasswordDialog } from "./new-password-dialog";
 import { toast } from "sonner";
@@ -31,12 +34,13 @@ export function CodeVerificationDialog({
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
       if (type == "signup") {
-        try {
-          await verifySignupCode({
-            code: formData.get("code") as string,
-          });
-        } catch (error) {
-          setError((error as Error).message);
+        const response = await verifySignupCode({
+          code: formData.get("code") as string,
+        });
+
+        if (response.isError) {
+          setError(response.message);
+          return;
         }
 
         // If signup success
@@ -45,27 +49,27 @@ export function CodeVerificationDialog({
         setIsCodeVerificationDialogOpen(false);
 
         // Show success message
-        toast.success("Account created successfully", {
+        toast.success(response.message, {
           description: "You can now sign in with your account.",
         });
 
         // Redirect to signin page
         router.push("/signin");
       } else {
-        try {
-          // Verify code
-          await verifyPasswordResetCode({
-            code: formData.get("code") as string,
-          });
+        const response = await verifyPasswordResetCode({
+          code: formData.get("code") as string,
+        });
 
-          // Close current dialog
-          setIsCodeVerificationDialogOpen(false);
-
-          // Open new password dialog
-          setIsNewPasswordDialogOpen(true);
-        } catch (error) {
-          setError((error as Error).message);
+        if (response.isError) {
+          setError(response.message);
+          return;
         }
+
+        // Close current dialog
+        setIsCodeVerificationDialogOpen(false);
+
+        // Open new password dialog
+        setIsNewPasswordDialogOpen(true);
       }
     });
   };

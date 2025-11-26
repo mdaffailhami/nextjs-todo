@@ -2,9 +2,8 @@
 
 import { Dialog } from "@/components/dialog";
 import { Button } from "@/components/ui/button";
-import { signOut } from "@/lib/actions/auth";
+import { signOut } from "@/app/(auth)/actions";
 import { LogOut } from "lucide-react";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -15,20 +14,19 @@ export function SignoutButton() {
 
   const onSubmit = async () => {
     startTransition(async () => {
-      try {
-        await signOut();
-      } catch (error) {
-        // If signout success
-        if (isRedirectError(error)) {
-          setIsDialogOpen(false);
+      const response = await signOut();
 
-          toast.success("You have been signed out", {
-            description: "Thank you for using our service.",
-          });
-          throw error;
-        }
-        setError((error as Error).message);
+      if (response.isError) {
+        setError(response.message);
+        return;
       }
+
+      // If signout success
+      setIsDialogOpen(false);
+
+      toast.success(response.message, {
+        description: "Thank you for using our service.",
+      });
     });
   };
 

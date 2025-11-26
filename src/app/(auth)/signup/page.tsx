@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "@/components/ui/link";
 import { useEffect, useState, useTransition } from "react";
-import { signUp } from "@/lib/actions/auth";
+import { signUp } from "@/app/(auth)/actions";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
@@ -29,17 +29,18 @@ export default function SigninPage() {
 
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      try {
-        await signUp({
-          email: formData.get("email") as string,
-          password: formData.get("password") as string,
-          passwordConfirmation: formData.get("password-confirmation") as string,
-        });
+      const response = await signUp({
+        email: formData.get("email") as string,
+        password: formData.get("password") as string,
+        passwordConfirmation: formData.get("password-confirmation") as string,
+      });
 
-        setIsCodeVerificationDialogOpen(true);
-      } catch (error) {
-        setError((error as Error).message);
+      if (response.isError) {
+        setError(response.message);
+        return;
       }
+
+      setIsCodeVerificationDialogOpen(true);
     });
   };
 

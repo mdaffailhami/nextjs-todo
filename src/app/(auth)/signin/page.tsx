@@ -8,7 +8,7 @@ import { Link } from "@/components/ui/link";
 import { useEffect, useState, useTransition } from "react";
 import { AlertCircleIcon } from "lucide-react";
 import { PendingBar } from "@/components/ui/pending-bar";
-import { signIn } from "@/lib/actions/auth";
+import { signIn } from "@/app/(auth)/actions";
 import {
   Card,
   CardContent,
@@ -33,21 +33,22 @@ export default function SigninPage() {
 
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      try {
-        await signIn({
-          email: formData.get("email") as string,
-          password: formData.get("password") as string,
-        });
+      const response = await signIn({
+        email: formData.get("email") as string,
+        password: formData.get("password") as string,
+      });
 
-        toast.success("Sign-in successful", {
-          description: `Successfully signed in as ${formData.get("email")}`,
-        });
-
-        // If signin success, redirect to home page
-        router.push("/");
-      } catch (error) {
-        setError((error as Error).message);
+      if (response.isError) {
+        setError(response.message);
+        return;
       }
+
+      toast.success(response.message, {
+        description: `Successfully signed in as ${formData.get("email")}`,
+      });
+
+      // If signin success, redirect to home page
+      router.push("/");
     });
   };
 

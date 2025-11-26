@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState, useTransition } from "react";
-import { requestPasswordResetEmail } from "@/lib/actions/auth";
+import { requestPasswordResetEmail } from "@/app/(auth)/actions";
 import { Dialog } from "@/components/dialog";
 import { useIsRequestCodeDialogOpen } from "../states/is-request-code-dialog-open";
 import { CodeVerificationDialog } from "./code-verification-dialog";
@@ -20,19 +20,20 @@ export function RequestCodeDialog() {
 
   const onSubmit = (formData: FormData) => {
     startTransition(async () => {
-      try {
-        await requestPasswordResetEmail({
-          email: formData.get("email") as string,
-        });
+      const response = await requestPasswordResetEmail({
+        email: formData.get("email") as string,
+      });
 
-        // Close current dialog
-        setIsRequestCodeDialogOpen(false);
-
-        // Open code verification dialog
-        setIsCodeVerificationDialogOpen(true);
-      } catch (error) {
-        setError((error as Error).message);
+      if (response.isError) {
+        setError(response.message);
+        return;
       }
+
+      // Close current dialog
+      setIsRequestCodeDialogOpen(false);
+
+      // Open code verification dialog
+      setIsCodeVerificationDialogOpen(true);
     });
   };
 
