@@ -34,7 +34,7 @@ export default async function RootLayout({
       >
         <RootProviders>
           {children}
-          <Toaster />
+          <Toaster position="bottom-center" />
         </RootProviders>
       </body>
     </html>
