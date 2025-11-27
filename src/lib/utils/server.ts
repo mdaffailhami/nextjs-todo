@@ -1,9 +1,9 @@
 import "server-only";
 
-import bcrypt from "bcrypt";
 import { cookies as nextCookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 export async function hashText(text: string): Promise<string> {
   const saltRounds = 12;
@@ -35,9 +35,9 @@ export async function sendEmail(body: {
     body: JSON.stringify(body),
   });
 
-  const { error, message } = await res.json();
+  const { isError, message } = await res.json();
 
-  if (error) throw new Error(message);
+  if (isError) throw new Error(message);
 }
 
 export async function verifySession() {

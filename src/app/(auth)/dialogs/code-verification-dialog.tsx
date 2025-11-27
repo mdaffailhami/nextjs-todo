@@ -1,12 +1,11 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState, useTransition } from "react";
+import { useActionState } from "react";
 import {
   verifyPasswordResetCode,
   verifySignupCode,
 } from "@/app/(auth)/actions";
 import { Dialog } from "@/components/dialog";
-import { NewPasswordDialog } from "./new-password-dialog";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useIsCodeVerificationDialogOpen } from "../states/is-code-verification-dialog-open";
@@ -25,25 +24,16 @@ export function CodeVerificationDialog({
   const { setIsNewPasswordDialogOpen } = useIsNewPasswordDialogOpen();
 
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [verifyRes, verifyAction, isVerifyPending] = useActionState(
+    async (_: unknown, formData: FormData) => {
+      const code = formData.get("code") as string;
 
-  // Reset error state on unmount
-  useEffect(() => () => setError(null), []);
-
-  const onSubmit = (formData: FormData) => {
-    startTransition(async () => {
       if (type == "signup") {
-        const response = await verifySignupCode({
-          code: formData.get("code") as string,
-        });
+        const response = await verifySignupCode({ code });
 
         if (response.isError) {
-          setError(response.message);
-          return;
+          return response;
         }
-
-        // If signup success
 
         // Close current dialog
         setIsCodeVerificationDialogOpen(false);
@@ -55,14 +45,12 @@ export function CodeVerificationDialog({
 
         // Redirect to signin page
         router.push("/signin");
+        return response;
       } else {
-        const response = await verifyPasswordResetCode({
-          code: formData.get("code") as string,
-        });
+        const response = await verifyPasswordResetCode({ code });
 
         if (response.isError) {
-          setError(response.message);
-          return;
+          return response;
         }
 
         // Close current dialog
@@ -70,37 +58,36 @@ export function CodeVerificationDialog({
 
         // Open new password dialog
         setIsNewPasswordDialogOpen(true);
+        return response;
       }
-    });
-  };
+    },
+    undefined,
+  );
 
   return (
-    <>
-      {type == "password-reset" && <NewPasswordDialog />}
-      <Dialog
-        isOpen={isCodeVerificationDialogOpen}
-        error={error}
-        isPending={isPending}
-        onOpenChange={setIsCodeVerificationDialogOpen}
-        title="Verify your code"
-        description="Enter the verification code sent to your email"
-        positiveActionText="Verify"
-        onSubmit={onSubmit}
-      >
-        <div className="grid gap-4">
-          <div className="grid gap-3">
-            <Label htmlFor="code">Verification code</Label>
-            <Input
-              id="code"
-              name="code"
-              placeholder="Enter your verification code"
-              type="text"
-              autoComplete="off"
-              required
-            />
-          </div>
+    <Dialog
+      isOpen={isCodeVerificationDialogOpen}
+      error={verifyRes?.isError ? verifyRes.message : null}
+      isPending={isVerifyPending}
+      onOpenChange={setIsCodeVerificationDialogOpen}
+      title="Verify your code"
+      description="Enter the verification code sent to your email"
+      positiveActionText="Verify"
+      onSubmit={verifyAction}
+    >
+      <div className="grid gap-4">
+        <div className="grid gap-3">
+          <Label htmlFor="code">Verification code</Label>
+          <Input
+            id="code"
+            name="code"
+            placeholder="Enter your verification code"
+            type="text"
+            autoComplete="off"
+            required
+          />
         </div>
-      </Dialog>
-    </>
+      </div>
+    </Dialog>
   );
 }

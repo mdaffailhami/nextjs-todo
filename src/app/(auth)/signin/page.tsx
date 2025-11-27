@@ -20,13 +20,15 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { RequestCodeDialog } from "../dialogs/request-code-dialog";
 import { useIsRequestCodeDialogOpen } from "../states/is-request-code-dialog-open";
+import { CodeVerificationDialog } from "../dialogs/code-verification-dialog";
+import { NewPasswordDialog } from "../dialogs/new-password-dialog";
 
 export default function SigninPage() {
   const { setIsRequestCodeDialogOpen } = useIsRequestCodeDialogOpen();
 
   const router = useRouter();
 
-  const [signInRes, signInReq, isSignInPending] = useActionState(
+  const [signInRes, signInAction, isSignInPending] = useActionState(
     async (_: unknown, formData: FormData) => {
       const email = formData.get("email") as string;
       const password = formData.get("password") as string;
@@ -48,7 +50,12 @@ export default function SigninPage() {
   return (
     <>
       <RequestCodeDialog />
-      <form action={signInReq} className="mx-auto flex w-full justify-center">
+      <CodeVerificationDialog type="password-reset" />
+      <NewPasswordDialog />
+      <form
+        action={signInAction}
+        className="mx-auto flex w-full justify-center"
+      >
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle className="text-primary text-center text-2xl">

@@ -4,21 +4,17 @@ import { Dialog } from "@/components/dialog";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/app/(auth)/actions";
 import { LogOut } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useState, useActionState } from "react";
 import { toast } from "sonner";
 
 export function SignoutButton() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-
-  const onSubmit = async () => {
-    startTransition(async () => {
+  const [signOutRes, signOutAction, isSignOutPending] = useActionState(
+    async () => {
       const response = await signOut();
 
       if (response.isError) {
-        setError(response.message);
-        return;
+        return response;
       }
 
       // If signout success
@@ -27,8 +23,10 @@ export function SignoutButton() {
       toast.success(response.message, {
         description: "Thank you for using our service.",
       });
-    });
-  };
+      return response;
+    },
+    undefined,
+  );
 
   return (
     <>
@@ -43,13 +41,13 @@ export function SignoutButton() {
       <Dialog
         type="destructive"
         isOpen={isDialogOpen}
-        error={error}
-        isPending={isPending}
+        error={signOutRes?.isError ? signOutRes.message : null}
+        isPending={isSignOutPending}
         onOpenChange={setIsDialogOpen}
         title="Sign out"
         description="Are you sure you want to sign out?"
         positiveActionText="Sign Out"
-        onSubmit={onSubmit}
+        onSubmit={signOutAction}
       />
     </>
   );

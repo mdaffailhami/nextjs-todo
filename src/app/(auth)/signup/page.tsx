@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "@/components/ui/link";
-import { useEffect, useState, useTransition } from "react";
+import { useActionState } from "react";
 import { signUp } from "@/app/(auth)/actions";
 import { PendingBar } from "@/components/ui/pending-bar";
 import { AlertCircleIcon } from "lucide-react";
@@ -20,34 +20,39 @@ import { CodeVerificationDialog } from "../dialogs/code-verification-dialog";
 import { useIsCodeVerificationDialogOpen } from "../states/is-code-verification-dialog-open";
 
 export default function SigninPage() {
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
   const { setIsCodeVerificationDialogOpen } = useIsCodeVerificationDialogOpen();
 
-  // Reset error state on unmount
-  useEffect(() => () => setError(null), []);
+  const [signUpRes, signUpAction, isSignUpPending] = useActionState(
+    async (_: unknown, formData: FormData) => {
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+      const passwordConfirmation = formData.get(
+        "password-confirmation",
+      ) as string;
 
-  const onSubmit = (formData: FormData) => {
-    startTransition(async () => {
       const response = await signUp({
-        email: formData.get("email") as string,
-        password: formData.get("password") as string,
-        passwordConfirmation: formData.get("password-confirmation") as string,
+        email,
+        password,
+        passwordConfirmation,
       });
 
       if (response.isError) {
-        setError(response.message);
-        return;
+        return response;
       }
 
       setIsCodeVerificationDialogOpen(true);
-    });
-  };
+      return response;
+    },
+    undefined,
+  );
 
   return (
     <>
       <CodeVerificationDialog type="signup" />
-      <form action={onSubmit} className="mx-auto flex w-full justify-center">
+      <form
+        action={signUpAction}
+        className="mx-auto flex w-full justify-center"
+      >
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle className="text-primary text-center text-2xl">
@@ -93,11 +98,11 @@ export default function SigninPage() {
             <Button type="submit" className="w-full">
               Sign Up
             </Button>
-            {isPending && <PendingBar />}
-            {error && (
+            {isSignUpPending && <PendingBar />}
+            {signUpRes?.isError && (
               <Alert variant="destructive">
                 <AlertCircleIcon />
-                <AlertTitle>{error}</AlertTitle>
+                <AlertTitle>{signUpRes.message}</AlertTitle>
               </Alert>
             )}
             <p className="text-muted-foreground">

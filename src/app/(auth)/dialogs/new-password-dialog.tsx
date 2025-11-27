@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState, useTransition } from "react";
+import { useActionState } from "react";
 import { changePassword } from "@/app/(auth)/actions";
 import { Dialog } from "@/components/dialog";
 import { toast } from "sonner";
@@ -10,25 +10,21 @@ export function NewPasswordDialog() {
   const { isNewPasswordDialogOpen, setIsNewPasswordDialogOpen } =
     useIsNewPasswordDialogOpen();
 
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [changeRes, changeAction, isChangePending] = useActionState(
+    async (_: unknown, formData: FormData) => {
+      const password = formData.get("password") as string;
+      const passwordConfirmation = formData.get(
+        "password-confirmation",
+      ) as string;
 
-  // Reset error state on unmount
-  useEffect(() => () => setError(null), []);
-
-  const onSubmit = (formData: FormData) => {
-    startTransition(async () => {
       const response = await changePassword({
-        password: formData.get("password") as string,
-        passwordConfirmation: formData.get("password-confirmation") as string,
+        password,
+        passwordConfirmation,
       });
 
       if (response.isError) {
-        setError(response.message);
-        return;
+        return response;
       }
-
-      // If password change success
 
       // Close current dialog
       setIsNewPasswordDialogOpen(false);
@@ -37,19 +33,21 @@ export function NewPasswordDialog() {
       toast.success(response.message, {
         description: "You can now sign in with your new password.",
       });
-    });
-  };
+      return response;
+    },
+    undefined,
+  );
 
   return (
     <Dialog
       isOpen={isNewPasswordDialogOpen}
-      error={error}
-      isPending={isPending}
+      error={changeRes?.isError ? changeRes.message : null}
+      isPending={isChangePending}
       onOpenChange={setIsNewPasswordDialogOpen}
       title="Set your new password"
       description="Enter the new password you want to use"
       positiveActionText="Submit"
-      onSubmit={onSubmit}
+      onSubmit={changeAction}
     >
       <div className="grid gap-4">
         <div className="grid gap-3">

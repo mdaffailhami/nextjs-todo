@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Task } from "@/generated/prisma/browser";
 import { editTask } from "@/app/(main)/(task)/actions";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useActionState } from "react";
 import { toast } from "sonner";
 import { useIsEditTaskDialogOpen } from "../states/is-edit-task-dialog-open";
 
@@ -12,20 +12,20 @@ export function EditTaskDialog({ task }: { task: Task }) {
   const router = useRouter();
   const { isEditTaskDialogOpen, setIsEditTaskDialogOpen } =
     useIsEditTaskDialogOpen();
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
 
-  const onSubmit = async (formData: FormData) => {
-    startTransition(async () => {
+  const [editTaskRes, editTaskAction, isEditTaskPending] = useActionState(
+    async (_: unknown, formData: FormData) => {
+      const name = formData.get("name") as string;
+      const deadline = new Date(formData.get("deadline") as string);
+
       const response = await editTask({
         id: task.id,
-        name: formData.get("name") as string,
-        deadline: new Date(formData.get("deadline") as string),
+        name,
+        deadline,
       });
 
       if (response.isError) {
-        setError(response.message);
-        return;
+        return response;
       }
 
       toast.success(response.message, {
@@ -35,19 +35,21 @@ export function EditTaskDialog({ task }: { task: Task }) {
       setIsEditTaskDialogOpen(false);
 
       router.refresh();
-    });
-  };
+      return response;
+    },
+    undefined,
+  );
 
   return (
     <Dialog
       isOpen={isEditTaskDialogOpen}
-      error={error}
-      isPending={isPending}
+      error={editTaskRes?.isError ? editTaskRes.message : null}
+      isPending={isEditTaskPending}
       onOpenChange={setIsEditTaskDialogOpen}
       title="Edit task"
       description="Edit your existing task"
       positiveActionText="Save"
-      onSubmit={onSubmit}
+      onSubmit={editTaskAction}
     >
       <div className="grid gap-4">
         <div className="grid gap-3">

@@ -1,16 +1,11 @@
 "use server";
 
 import { generateRandomNumber } from "@/lib/utils";
-import {
-  verifyHashedText,
-  hashText,
-  sendEmail,
-  verifySession,
-} from "@/lib/utils/server";
+import { sendEmail, verifyHashedText, hashText } from "@/lib/utils/server";
+import { getErrorMessage } from "@/lib/utils";
 import { cookies as nextCookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import prisma from "../../lib/prisma";
-import { getErrorMessage } from "@/lib/utils";
 import { ServerResponse } from "@/lib/types";
 
 export async function signUp({

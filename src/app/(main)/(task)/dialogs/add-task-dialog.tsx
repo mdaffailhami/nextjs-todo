@@ -1,29 +1,32 @@
+"use client";
+
 import { Dialog } from "@/components/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addTask } from "@/app/(main)/(task)/actions";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useActionState } from "react";
 import { toast } from "sonner";
 import { useIsAddTaskDialogOpen } from "../states/is-add-task-dialog-open";
 
 export function AddTaskDialog() {
   const router = useRouter();
+
   const { isAddTaskDialogOpen, setIsAddTaskDialogOpen } =
     useIsAddTaskDialogOpen();
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
 
-  const onSubmit = async (formData: FormData) => {
-    startTransition(async () => {
+  const [addTaskRes, addTaskAction, isAddTaskPending] = useActionState(
+    async (_: unknown, formData: FormData) => {
+      const name = formData.get("name") as string;
+      const deadline = new Date(formData.get("deadline") as string);
+
       const response = await addTask({
-        name: formData.get("name") as string,
-        deadline: new Date(formData.get("deadline") as string),
+        name,
+        deadline,
       });
 
       if (response.isError) {
-        setError(response.message);
-        return;
+        return response;
       }
 
       toast.success(response.message, {
@@ -33,19 +36,21 @@ export function AddTaskDialog() {
       setIsAddTaskDialogOpen(false);
 
       router.refresh();
-    });
-  };
+      return response;
+    },
+    undefined,
+  );
 
   return (
     <Dialog
       isOpen={isAddTaskDialogOpen}
-      error={error}
-      isPending={isPending}
+      error={addTaskRes?.isError ? addTaskRes.message : null}
+      isPending={isAddTaskPending}
       onOpenChange={setIsAddTaskDialogOpen}
       title="Add new task"
       description="Enter the new task you want to add"
       positiveActionText="Add"
-      onSubmit={onSubmit}
+      onSubmit={addTaskAction}
     >
       <div className="grid gap-4">
         <div className="grid gap-3">
