@@ -1,24 +1,57 @@
 "use client";
 
-import { useTheme } from "@/app/states/theme";
+import { cn } from "@/lib/utils";
+import { LaptopIcon, MoonIcon, SunIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { Moon, Sun } from "lucide-react";
 
 export function ThemeToggler() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const onClick = () => {
-    setTheme(theme === "light" ? "dark" : "light");
+    if (theme === "dark") {
+      setTheme("light");
+    } else if (theme === "light") {
+      setTheme("system");
+    } else {
+      setTheme("dark");
+    }
   };
 
   return (
     <Button
       variant={"outline"}
       onClick={onClick}
-      className="border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground relative flex size-9.5 items-center justify-center rounded-md border shadow-sm transition-colors hover:cursor-pointer"
+      className="hover:opacity-70 flex size-10 items-center justify-center rounded-md border hover:cursor-pointer"
     >
-      <Sun className="size-5 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-      <Moon className="absolute size-5 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+      {mounted && (
+        <>
+          <SunIcon
+            className={cn(
+              "absolute size-5 transition-transform",
+              theme === "light" ? "scale-100 rotate-0" : "scale-0 -rotate-90",
+            )}
+          />
+          <LaptopIcon
+            className={cn(
+              "absolute size-5 transition-transform",
+              theme === "system" ? "scale-100 rotate-0" : "scale-0 rotate-90",
+            )}
+          />
+          <MoonIcon
+            className={cn(
+              "absolute size-5 transition-transform",
+              theme === "dark" ? "scale-100 rotate-0" : "scale-0 rotate-90",
+            )}
+          />
+        </>
+      )}
     </Button>
   );
 }

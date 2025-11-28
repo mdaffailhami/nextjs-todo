@@ -1,5 +1,5 @@
-import { ThemeProvider } from "./states/theme";
+import { ThemeProvider } from "next-themes";
 
 export function RootProviders({ children }: { children: React.ReactNode }) {
-  return <ThemeProvider>{children}</ThemeProvider>;
+  return <ThemeProvider attribute="class" defaultTheme="system" enableSystem>{children}</ThemeProvider>;
 }
