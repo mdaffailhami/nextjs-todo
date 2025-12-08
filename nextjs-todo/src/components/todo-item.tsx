@@ -1,8 +1,8 @@
 "use client";
 
-import { Trash2Icon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/icon-button";
 import { Todo } from "@/schema";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,7 @@ export function TodoItem({
   onDeleteTrigger,
 }: TodoItemProps) {
   return (
-    <div className="hover:bg-muted/50 flex items-center justify-between gap-2 rounded-lg border p-3 shadow-sm transition-colors">
+    <div className="border-neutral-3 bg-neutral-2 hover:bg-neutral-1 flex items-center justify-between gap-2 rounded-lg border p-3 shadow-sm transition-colors">
       <div className="flex items-center gap-3 overflow-hidden">
         <Checkbox
           checked={todo.isCompleted}
@@ -29,22 +29,19 @@ export function TodoItem({
           htmlFor={`todo-${todo.id}`}
           className={cn(
             "cursor-pointer truncate text-sm font-medium transition-all select-none",
-            todo.isCompleted &&
-              "text-muted-foreground decoration-muted-foreground/50 line-through",
+            todo.isCompleted && "text-neutral-4 line-through opacity-60",
           )}
         >
           {todo.name}
         </label>
       </div>
-      <Button
+
+      <IconButton
         variant="ghost"
-        size="icon-sm"
-        className="text-muted-foreground hover:text-destructive rounded-full"
+        className="text-destructive"
+        icon={TrashIcon}
         onClick={() => onDeleteTrigger(todo.id)}
-      >
-        <Trash2Icon className="size-4" />
-        <span className="sr-only">Delete Todo</span>
-      </Button>
+      />
     </div>
   );
 }

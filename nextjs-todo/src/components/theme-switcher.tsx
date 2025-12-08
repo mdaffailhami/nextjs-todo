@@ -1,20 +1,15 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { LaptopIcon, MoonIcon, SunIcon } from "lucide-react";
+import { EllipsisIcon, LaptopIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
+import { IconButton } from "./icon-button";
+import { useIsHydrated } from "@/hooks/use-is-hydrated";
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
-  const [isHydrated, setIsHydrated] = useState(false);
+  const isHydrated = useIsHydrated();
 
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
-
-  const onClick = () => {
+  const handleClick = () => {
     if (theme === "dark") {
       setTheme("light");
     } else if (theme === "light") {
@@ -25,33 +20,16 @@ export function ThemeSwitcher() {
   };
 
   return (
-    <Button
-      variant={"outline"}
-      onClick={onClick}
-      className="flex size-10 items-center justify-center rounded-md border hover:cursor-pointer hover:opacity-70"
-    >
-      {isHydrated && (
-        <>
-          <SunIcon
-            className={cn(
-              "absolute size-5 transition-transform",
-              theme === "light" ? "scale-100 rotate-0" : "scale-0 -rotate-90",
-            )}
-          />
-          <LaptopIcon
-            className={cn(
-              "absolute size-5 transition-transform",
-              theme === "system" ? "scale-100 rotate-0" : "scale-0 rotate-90",
-            )}
-          />
-          <MoonIcon
-            className={cn(
-              "absolute size-5 transition-transform",
-              theme === "dark" ? "scale-100 rotate-0" : "scale-0 rotate-90",
-            )}
-          />
-        </>
-      )}
-    </Button>
+    <IconButton
+      variant="filled"
+      icon={(() => {
+        if (!isHydrated) return EllipsisIcon;
+
+        if (theme === "dark") return MoonIcon;
+        if (theme === "light") return SunIcon;
+        return LaptopIcon;
+      })()}
+      onClick={handleClick}
+    />
   );
 }
