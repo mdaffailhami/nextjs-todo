@@ -19,7 +19,7 @@ export function TodoList() {
   // If there is no todo
   if (todos.value.length === 0) {
     return (
-      <div className="text-muted-foreground flex h-32 flex-col items-center justify-center rounded-lg border border-dashed text-center text-sm">
+      <div className="text-on-neutral-2 border-neutral-4 flex h-32 flex-col items-center justify-center rounded-lg border border-dashed text-center text-sm">
         <p>No todos yet.</p>
         <p>Add one to get started!</p>
       </div>
