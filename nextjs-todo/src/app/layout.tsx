@@ -20,10 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        <div className={`root ${inter.variable}`}>
-          <RootProviders>{children}</RootProviders>
-        </div>
+      <body className={inter.variable}>
+        <RootProviders>{children}</RootProviders>
       </body>
     </html>
   );

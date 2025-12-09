@@ -68,7 +68,7 @@
     @apply outline-0 outline-transparent dark:outline-0 dark:outline-transparent;
   }
 
-  .root {
-    @apply bg-neutral-1 text-on-neutral-1 border-neutral-4 isolate min-h-screen font-sans antialiased transition-colors;
+  body {
+    @apply bg-neutral-1 text-on-neutral-1 border-neutral-4 font-sans antialiased transition-colors;
   }
 }
