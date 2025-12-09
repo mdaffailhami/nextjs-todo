@@ -4,7 +4,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 
 export default function Home() {
   return (
-    <main className="container mx-auto flex min-h-screen flex-col items-center justify-center gap-y-3 px-2">
+    <main className="container mx-auto flex min-h-screen flex-col items-center justify-center gap-y-3 px-2 py-4">
       {/* Card */}
       <div className="border-neutral-3 bg-neutral-2 flex w-full max-w-sm flex-col gap-6 rounded-xl border p-6 shadow-sm">
         {/* Header */}
