@@ -20,7 +20,7 @@ export default function Home() {
         </div>
       </div>
 
-      <ThemeSwitcher />
+      <ThemeSwitcher className="fixed right-3 bottom-3" />
     </main>
   );
 }

@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { IconButton } from "@/components/ui/icon-button";
 import { useIsHydrated } from "@/hooks/use-is-hydrated";
 
-export function ThemeSwitcher() {
+export function ThemeSwitcher({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
   const isHydrated = useIsHydrated();
 
@@ -21,6 +21,7 @@ export function ThemeSwitcher() {
 
   return (
     <IconButton
+      className={className}
       disabled={!isHydrated}
       variant="filled"
       icon={(() => {
