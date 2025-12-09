@@ -5,11 +5,10 @@ import { IconButton } from "@/components/ui/icon-button";
 import { useTodos } from "@/states/todos";
 import { PlusIcon } from "lucide-react";
 import { Field } from "@base-ui-components/react/field";
-import { cn } from "@/lib/utils";
 import { Form } from "@base-ui-components/react";
 import { Input } from "@/components/ui/input";
 
-export function TodoInput() {
+export const TodoInput = () => {
   const todos = useTodos();
   const [name, setName] = useState("");
 
@@ -44,4 +43,4 @@ export function TodoInput() {
       />
     </Form>
   );
-}
+};

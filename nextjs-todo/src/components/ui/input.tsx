@@ -3,7 +3,7 @@ import { Input as BaseInput } from "@base-ui-components/react";
 
 export type InputProps = BaseInput.Props & {};
 
-export function Input({ className, ...props }: InputProps) {
+export const Input = ({ className, ...props }: InputProps) => {
   return (
     <BaseInput
       {...props}
@@ -15,4 +15,4 @@ export function Input({ className, ...props }: InputProps) {
       )}
     />
   );
-}
+};

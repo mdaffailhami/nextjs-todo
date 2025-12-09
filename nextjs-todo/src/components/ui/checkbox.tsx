@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export type CheckboxProps = BaseCheckbox.Root.Props & {};
 
-export function Checkbox({ className, ...props }: CheckboxProps) {
+export const Checkbox = ({ className, ...props }: CheckboxProps) => {
   return (
     <BaseCheckbox.Root
       className={cn(
@@ -19,4 +19,4 @@ export function Checkbox({ className, ...props }: CheckboxProps) {
       </BaseCheckbox.Indicator>
     </BaseCheckbox.Root>
   );
-}
+};

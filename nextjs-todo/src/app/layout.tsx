@@ -1,7 +1,9 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { RootProviders } from "./providers";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { ThemeProvider } from "next-themes";
+import { TodosProvider } from "@/states/todos";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -13,16 +15,27 @@ export const metadata: Metadata = {
   description: "A simple todo list built with NextJS.",
 };
 
-export default function RootLayout({
+const Providers = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <TodosProvider>{children}</TodosProvider>
+    </ThemeProvider>
+  );
+};
+
+export default ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.variable}>
-        <RootProviders>{children}</RootProviders>
+        <Providers>
+          {children}
+          <ThemeSwitcher className="fixed right-3 bottom-3" />
+        </Providers>
       </body>
     </html>
   );
-}
+};

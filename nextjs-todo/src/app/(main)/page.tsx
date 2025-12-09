@@ -1,8 +1,7 @@
-import { TodoInput } from "@/app/(main)/todo-input";
-import { TodoList } from "@/app/(main)/todo-list";
-import { ThemeSwitcher } from "@/components/theme-switcher";
+import { TodoInput } from "./todo-input";
+import { TodoList } from "./todo-list";
 
-export default function Home() {
+export default () => {
   return (
     <main className="container mx-auto flex min-h-screen flex-col items-center justify-center gap-y-3 px-2 py-4">
       {/* Card */}
@@ -19,8 +18,6 @@ export default function Home() {
           <TodoList />
         </div>
       </div>
-
-      <ThemeSwitcher className="fixed right-3 bottom-3" />
     </main>
   );
-}
+};

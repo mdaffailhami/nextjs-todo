@@ -7,12 +7,12 @@ export type IconButtonProps = Button.Props & {
   icon: LucideIcon;
 };
 
-export function IconButton({
+export const IconButton = ({
   icon: Icon,
   variant = "ghost",
   className,
   ...props
-}: IconButtonProps) {
+}: IconButtonProps) => {
   return (
     <Button
       className={cn(
@@ -28,4 +28,4 @@ export function IconButton({
       <Icon className="size-full" />
     </Button>
   );
-}
+};

@@ -3,7 +3,7 @@
 import { TodoCard, TodoCardSkeleton } from "@/components/todo-card";
 import { useTodos } from "@/states/todos";
 
-export function TodoList() {
+export const TodoList = () => {
   const todos = useTodos();
 
   if (!todos.isLoaded) {
@@ -38,4 +38,4 @@ export function TodoList() {
       ))}
     </div>
   );
-}
+};

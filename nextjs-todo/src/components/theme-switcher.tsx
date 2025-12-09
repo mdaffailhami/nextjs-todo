@@ -3,9 +3,9 @@
 import { EllipsisIcon, LaptopIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { IconButton } from "@/components/ui/icon-button";
-import { useIsHydrated } from "@/hooks/use-is-hydrated";
+import { useIsHydrated } from "@/hooks";
 
-export function ThemeSwitcher({ className }: { className?: string }) {
+export const ThemeSwitcher = ({ className }: { className?: string }) => {
   const { theme, setTheme } = useTheme();
   const isHydrated = useIsHydrated();
 
@@ -35,4 +35,4 @@ export function ThemeSwitcher({ className }: { className?: string }) {
       onClick={handleClick}
     />
   );
-}
+};

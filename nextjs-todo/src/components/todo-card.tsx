@@ -13,11 +13,11 @@ type TodoCardProps = {
   onDeleteTrigger: (id: string) => void;
 };
 
-export function TodoCard({
+export const TodoCard = ({
   todo,
   onToggleTrigger,
   onDeleteTrigger,
-}: TodoCardProps) {
+}: TodoCardProps) => {
   return (
     <div className="border-neutral-3 bg-neutral-2 flex items-center justify-between rounded-lg border p-3 shadow-sm transition-all">
       <div className="flex items-center gap-3 overflow-hidden">
@@ -45,9 +45,9 @@ export function TodoCard({
       />
     </div>
   );
-}
+};
 
-export function TodoCardSkeleton() {
+export const TodoCardSkeleton = () => {
   return (
     <div className="border-neutral-3 bg-neutral-2 flex items-center justify-between rounded-lg border p-3 shadow-sm transition-all">
       <div className="flex items-center gap-3 overflow-hidden">
@@ -58,4 +58,4 @@ export function TodoCardSkeleton() {
       <Skeleton className="size-10 rounded-full" />
     </div>
   );
-}
+};

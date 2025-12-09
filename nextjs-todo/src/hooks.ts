@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function useIsHydrated() {
+export const useIsHydrated = () => {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
@@ -8,4 +8,4 @@ export function useIsHydrated() {
   }, []);
 
   return isHydrated;
-}
+};
