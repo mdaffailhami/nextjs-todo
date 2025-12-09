@@ -2,7 +2,7 @@
 
 import { EllipsisIcon, LaptopIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { IconButton } from "./icon-button";
+import { IconButton } from "@/components/ui/icon-button";
 import { useIsHydrated } from "@/hooks/use-is-hydrated";
 
 export function ThemeSwitcher() {
@@ -21,8 +21,10 @@ export function ThemeSwitcher() {
 
   return (
     <IconButton
+      disabled={!isHydrated}
       variant="filled"
       icon={(() => {
+        // If it's not hydrated yet
         if (!isHydrated) return EllipsisIcon;
 
         if (theme === "dark") return MoonIcon;

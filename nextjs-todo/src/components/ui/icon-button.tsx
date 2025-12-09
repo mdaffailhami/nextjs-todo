@@ -16,15 +16,16 @@ export function IconButton({
   return (
     <Button
       className={cn(
-        "cursor-pointer p-2.5 transition-colors",
+        "size-10 p-2.5 transition-colors",
+        "cursor-pointer disabled:pointer-events-none disabled:opacity-50",
         variant === "filled" &&
-          "bg-primary text-on-primary hover:bg-primary/75 hover:outline-primary/75 rounded-lg outline-2 outline-offset-2",
+          "bg-primary text-on-primary hover:outline-primary/75 hover:bg-primary/75 rounded-lg shadow-md outline-2 outline-offset-2",
         variant === "ghost" && "hover:bg-neutral-3 text-primary rounded-full",
         className,
       )}
       {...props}
     >
-      <Icon className="size-5" />
+      <Icon className="size-full" />
     </Button>
   );
 }

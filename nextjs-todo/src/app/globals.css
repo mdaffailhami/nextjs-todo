@@ -1,6 +1,10 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+
+/* Focus style (e.g. Tab keyboard navigation) should be the same as hover */
+@custom-variant hover (&:is(:hover, :focus-visible));
 
 @theme inline {
   /* Fonts */
@@ -10,15 +14,14 @@
   --color-primary: var(--primary);
   --color-on-primary: var(--on-primary);
 
-  /* Feedback colors */
   --color-destructive: var(--destructive);
   --color-on-destructive: var(--on-destructive);
 
   /* Neutral colors */
   --color-neutral-1: var(--neutral-1); /* (e.g. Main background) */
   --color-neutral-2: var(--neutral-2); /* (e.g. Card background) */
-  --color-neutral-3: var(--neutral-3); /* (e.g. Hover backgrounds) */
-  --color-neutral-4: var(--neutral-4); /* (e.g. Borders/dividers) */
+  --color-neutral-3: var(--neutral-3); /* (e.g. On hover background) */
+  --color-neutral-4: var(--neutral-4); /* (e.g. Border) */
 
   --color-on-neutral-1: var(--on-neutral-1); /* (e.g. Primary text) */
   --color-on-neutral-2: var(--on-neutral-2); /* (e.g. Muted text) */
@@ -61,7 +64,11 @@
 
 @layer base {
   * {
-    /* Apply focus styles (e.g. Tab keyboard navigation) */
-    @apply focus-visible:outline-primary/75 outline-2 outline-offset-2 outline-transparent;
+    /* Reset browser default focus styles (e.g. Tab keyboard navigation) */
+    @apply outline-0 outline-transparent dark:outline-0 dark:outline-transparent;
+  }
+
+  .root {
+    @apply bg-neutral-1 text-on-neutral-1 border-neutral-4 isolate min-h-screen font-sans antialiased transition-colors;
   }
 }

@@ -19,9 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable}`}>
-      <body className="bg-neutral-1 text-on-neutral-1 border-neutral-4 min-h-screen font-sans antialiased transition-colors">
-        <RootProviders>{children}</RootProviders>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <div className={`root ${inter.variable}`}>
+          <RootProviders>{children}</RootProviders>
+        </div>
       </body>
     </html>
   );

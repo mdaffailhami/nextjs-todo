@@ -23,6 +23,7 @@ export function TodoList() {
           key={todo.id}
           todo={todo}
           onToggleTrigger={(id) => todos.toggleCompletion(id)}
+          onEditTrigger={(id) => {}}
           onDeleteTrigger={(id) => todos.delete(id)}
         />
       ))}
