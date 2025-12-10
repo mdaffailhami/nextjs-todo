@@ -33,14 +33,15 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         setTodos(JSON.parse(storedTodos));
       } catch (error) {
-        console.error("Failed to parse todos from local storage:", error);
+        console.error(`Failed to parse todos from local storage:\n${error}`);
+        alert(`Failed to parse todos from local storage:\n${error}`);
       }
     }
 
     setIsLoaded(true);
   }, []);
 
-  // Save to local storage whenever todos change & also after the todos is loaded
+  // Save to local storage whenever the "todos" is changed & also after the "todos" is loaded
   useEffect(() => {
     if (isLoaded) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));

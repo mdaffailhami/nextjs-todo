@@ -2,7 +2,7 @@
 
 import { TrashIcon } from "lucide-react";
 import { IconButton } from "@/components/ui/icon-button";
-import { Todo } from "@/schema";
+import { type Todo } from "@/schema";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "./ui/skeleton";
@@ -29,8 +29,8 @@ export const TodoCard = ({
         <label
           htmlFor={`todo-${todo.id}`}
           className={cn(
-            "cursor-pointer truncate text-sm font-medium transition-all select-none",
-            todo.isCompleted && "text-neutral-4 line-through opacity-60",
+            "cursor-pointer truncate text-sm font-medium transition-all",
+            todo.isCompleted && "text-on-neutral-2 line-through",
           )}
         >
           {todo.name}
