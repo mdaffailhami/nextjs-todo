@@ -26,216 +26,30 @@ export const cn = (...inputs: ClassValue[]) => {
 };
 ```
 
+## Add ui components
+
+> IconButton, Input, Checkbox, & Skeleton
+> https://github.com/mdaffailhami/mdaffailhami-react-ui
+
 ## Specify app theme
 
-```css
-/* @/app/globals.css */
-@import "tailwindcss";
+> https://github.com/mdaffailhami/mdaffailhami-react-ui
 
-@custom-variant dark (&:is(.dark *));
+## Edit app metadata & change font to Inter
 
-/* Focus style (e.g. Tab keyboard navigation) should be the same as hover */
-@custom-variant hover (&:is(:hover, :focus-visible));
-
-@theme inline {
-  /* Brand colors */
-  --color-primary: var(--primary);
-  --color-on-primary: var(--on-primary);
-
-  --color-destructive: var(--destructive);
-  --color-on-destructive: var(--on-destructive);
-
-  /* Neutral colors */
-  --color-neutral-1: var(--neutral-1); /* (e.g. Main background) */
-  --color-neutral-2: var(--neutral-2); /* (e.g. Card background) */
-  --color-neutral-3: var(--neutral-3); /* (e.g. On hover background) */
-  --color-neutral-4: var(--neutral-4); /* (e.g. Border) */
-
-  --color-on-neutral-1: var(--on-neutral-1); /* (e.g. Primary text) */
-  --color-on-neutral-2: var(--on-neutral-2); /* (e.g. Muted text) */
-
-  /* Transitions */
-  --default-transition-duration: 300ms;
-}
-
-:root {
-  --primary: oklch(0.55 0.2 264.376);
-  --on-primary: oklch(0.99 0 0);
-
-  --destructive: oklch(0.58 0.24 25);
-  --on-destructive: oklch(0.99 0 0);
-
-  --neutral-1: oklch(0.99 0 0);
-  --neutral-2: oklch(1 0 0);
-  --neutral-3: oklch(0.96 0.005 270);
-  --neutral-4: oklch(0.9 0.01 270);
-
-  --on-neutral-1: oklch(0.15 0.01 270);
-  --on-neutral-2: oklch(0.5 0.02 270);
-}
-
-.dark {
-  --primary: oklch(67.936% 0.16867 263.806);
-  --on-primary: oklch(0.99 0 0);
-
-  --destructive: oklch(0.65 0.22 25);
-  --on-destructive: oklch(0.99 0 0);
-
-  --neutral-1: oklch(0.15 0.01 270);
-  --neutral-2: oklch(0.2 0.015 270);
-  --neutral-3: oklch(0.25 0.015 270);
-  --neutral-4: oklch(0.3 0.02 270);
-
-  --on-neutral-1: oklch(0.95 0 0);
-  --on-neutral-2: oklch(0.55 0.02 270);
-}
-
-@layer base {
-  * {
-    /* Reset browser default focus styles (e.g. Tab keyboard navigation) */
-    @apply outline-0 outline-transparent dark:outline-0 dark:outline-transparent;
-  }
-
-  body {
-    @apply bg-neutral-1 text-on-neutral-1 border-neutral-4 font-sans antialiased transition-colors;
-  }
-}
-```
-
-## Specify font
-
-```ts
+```tsx
 // @/app/layout.tsx
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
-```
 
-```html
-<!-- @/app/layout.tsx -->
-<body className="{inter.variable}"></body>
-```
-
-```css
-/* @/app/globals.css */
-@theme inline {
-  /* Fonts */
-  --font-sans: var(--font-inter);
-
-  /* Brand colors */
-  --color-primary: var(--primary);
-  ...
-}
-```
-
-## Edit app metadata
-
-```ts
-// @/app/layout.tsx
 export const metadata: Metadata = {
   title: "NextJS Todo",
   description: "A simple todo list built with NextJS.",
 };
-```
 
-## Add ui components
-
-```tsx
-// @/components/ui/icon-button.tsx
-import { cn } from "@/lib/utils";
-import { Button } from "@base-ui-components/react";
-import { type LucideIcon } from "lucide-react";
-
-export type IconButtonProps = Button.Props & {
-  variant: "filled" | "ghost";
-  icon: LucideIcon;
-};
-
-export const IconButton = ({
-  icon: Icon,
-  variant = "ghost",
-  className,
-  ...props
-}: IconButtonProps) => {
-  return (
-    <Button
-      className={cn(
-        "size-10 p-2.5 transition-colors",
-        "cursor-pointer disabled:pointer-events-none disabled:opacity-50",
-        variant === "filled" &&
-          "bg-primary text-on-primary hover:outline-primary/75 hover:bg-primary/75 rounded-lg shadow-md outline-2 outline-offset-2",
-        variant === "ghost" && "hover:bg-neutral-3 text-primary rounded-full",
-        className,
-      )}
-      {...props}
-    >
-      <Icon className="size-full" />
-    </Button>
-  );
-};
-```
-
-```tsx
-// @/components/ui/checkbox.tsx
-import { Checkbox as BaseCheckbox } from "@base-ui-components/react";
-import { CheckIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-export type CheckboxProps = BaseCheckbox.Root.Props & {};
-
-export const Checkbox = ({ className, ...props }: CheckboxProps) => {
-  return (
-    <BaseCheckbox.Root
-      className={cn(
-        "bg-neutral-3 border-neutral-4 flex size-5.5 cursor-pointer overflow-hidden rounded-md border transition-colors",
-        "group hover:bg-neutral-4",
-        className,
-      )}
-      {...props}
-    >
-      <BaseCheckbox.Indicator className="bg-primary group-hover:bg-primary/75 size-full p-0.5">
-        <CheckIcon className={cn("text-on-primary size-full")} />
-      </BaseCheckbox.Indicator>
-    </BaseCheckbox.Root>
-  );
-};
-```
-
-```ts
-// @/components/ui/input.tsx
-import { cn } from "@/lib/utils";
-import { Input as BaseInput } from "@base-ui-components/react";
-
-export type InputProps = BaseInput.Props & {};
-
-export const Input = ({ className, ...props }: InputProps) => {
-  return (
-    <BaseInput
-      {...props}
-      className={cn(
-        "border-neutral-4 bg-neutral-2 h-10 w-full rounded-lg border px-3 py-2 text-sm shadow-sm transition-colors",
-        "placeholder:text-on-neutral-2",
-        "disabled:pointer-events-none disabled:opacity-50",
-        "hover:bg-neutral-1 focus:outline-primary/75 outline-2",
-      )}
-    />
-  );
-};
-```
-
-```tsx
-// @/components/ui/skeleton.tsx
-import { cn } from "@/lib/utils";
-
-export const Skeleton = ({
-  className,
-  ...props
-}: React.ComponentProps<"div">) => {
-  return (
-    <div className={cn("bg-neutral-3 animate-pulse", className)} {...props} />
-  );
-};
+<body className={inter.variable}>
 ```
 
 ## Create main page
