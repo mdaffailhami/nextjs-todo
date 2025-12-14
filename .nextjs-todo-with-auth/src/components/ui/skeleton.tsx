@@ -1,10 +1,10 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils/index"
 
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="skeleton"
-      className={cn("bg-muted rounded-xl animate-pulse", className)}
+      className={cn("bg-accent animate-pulse rounded-md", className)}
       {...props}
     />
   )

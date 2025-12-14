@@ -9,7 +9,7 @@ export default () => {
         {/* Header */}
         <div className="flex flex-col gap-2">
           <h1 className="text-primary text-2xl font-semibold">NextJS Todo</h1>
-          <p className="text-sm">A simple todo list built with NextJS.</p>
+          <p className="text-sm">A simple todo app built with NextJS.</p>
         </div>
 
         {/* Content */}

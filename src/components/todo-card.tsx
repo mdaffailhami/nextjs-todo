@@ -1,7 +1,7 @@
 "use client";
 
 import { TrashIcon } from "lucide-react";
-import { IconButton } from "@/components/ui/icon-button";
+import { Button } from "@/components/ui/button";
 import { type Todo } from "@/schema";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -30,19 +30,21 @@ export const TodoCard = ({
           htmlFor={`todo-${todo.id}`}
           className={cn(
             "cursor-pointer truncate text-sm font-medium transition-all",
-            todo.isCompleted && "text-on-neutral-2 line-through",
+            todo.isCompleted && "text-on-neutral-2 line-through"
           )}
         >
           {todo.name}
         </label>
       </div>
 
-      <IconButton
+      <Button
         variant="ghost"
-        className="text-destructive"
-        icon={TrashIcon}
+        className="text-destructive hover:text-destructive"
+        size="icon-lg"
         onClick={() => onDeleteTrigger(todo.id)}
-      />
+      >
+        <TrashIcon className="size-4.5" />
+      </Button>
     </div>
   );
 };

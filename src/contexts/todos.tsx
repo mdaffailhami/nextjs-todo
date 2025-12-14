@@ -6,10 +6,10 @@ import { createContext, useState, use, useEffect } from "react";
 const STORAGE_KEY = "todos";
 
 export type TodosContextType = {
-  value: Todo[];
-  add: (name: string) => void;
-  delete: (id: string) => void;
-  toggleCompletion: (id: string) => void;
+  todos: Todo[];
+  addTodo: (name: string) => void;
+  deleteTodo: (id: string) => void;
+  toggleTodo: (id: string) => void;
   isLoaded: boolean;
 };
 
@@ -33,8 +33,9 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         setTodos(JSON.parse(storedTodos));
       } catch (error) {
-        console.error(`Failed to parse todos from local storage:\n${error}`);
-        alert(`Failed to parse todos from local storage:\n${error}`);
+        const message = `Failed to parse todos from local storage:\n${error}`;
+        console.error(message);
+        alert(message);
       }
     }
 
@@ -48,7 +49,7 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [todos, isLoaded]);
 
-  const add = (name: string) => {
+  const addTodo = (name: string) => {
     // Create todo
     const newTodo: Todo = {
       id: crypto.randomUUID(),
@@ -60,11 +61,11 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
     setTodos((todos) => [newTodo, ...todos]);
   };
 
-  const toggleCompletion = (id: string) => {
+  const toggleTodo = (id: string) => {
     setTodos((todos) =>
       todos.map((todo) =>
-        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo,
-      ),
+        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
+      )
     );
   };
 
@@ -75,10 +76,10 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <TodosContext.Provider
       value={{
-        value: todos,
-        add,
-        toggleCompletion,
-        delete: deleteTodo,
+        todos,
+        addTodo,
+        toggleTodo,
+        deleteTodo,
         isLoaded,
       }}
     >

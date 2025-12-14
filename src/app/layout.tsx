@@ -1,42 +1,37 @@
-import { Toaster } from "@/components/ui/toaster";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { RootProviders } from "./providers";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { ThemeSwitcher } from "@/app/theme-switcher";
+import { ThemeProvider } from "next-themes";
+import { TodosProvider } from "@/contexts/todos";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "NextJS Todo",
-  description: "Your ultimate task management solution built with Next.js.",
+  description: "A simple todo app built with NextJS.",
 };
 
-// Explicitly opt into dynamic rendering for user-specific theme
-// export const dynamic = "force-dynamic";
+const Providers = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <TodosProvider>{children}</TodosProvider>
+    </ThemeProvider>
+  );
+};
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased transition-colors duration-200`}
-      >
-        <RootProviders>
+      <body className={inter.variable}>
+        <Providers>
           {children}
-          <Toaster position="bottom-center" />
-        </RootProviders>
+          <ThemeSwitcher />
+        </Providers>
       </body>
     </html>
   );
-}
+};

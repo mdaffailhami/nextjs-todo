@@ -1,12 +1,12 @@
 "use client";
 
 import { TodoCard, TodoCardSkeleton } from "@/components/todo-card";
-import { useTodos } from "@/states/todos";
+import { useTodos } from "@/contexts/todos";
 
 export const TodoList = () => {
-  const todos = useTodos();
+  const { todos, isLoaded, toggleTodo, deleteTodo } = useTodos();
 
-  if (!todos.isLoaded) {
+  if (!isLoaded) {
     return (
       <div className="flex flex-col gap-2">
         {Array.from({ length: 3 }).map((_, i) => (
@@ -17,7 +17,7 @@ export const TodoList = () => {
   }
 
   // If there is no todo
-  if (todos.value.length === 0) {
+  if (todos.length === 0) {
     return (
       <div className="text-on-neutral-2 border-neutral-4 flex h-32 flex-col items-center justify-center rounded-lg border border-dashed text-center text-sm">
         <p>No todos yet.</p>
@@ -28,12 +28,12 @@ export const TodoList = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      {todos.value.map((todo) => (
+      {todos.map((todo) => (
         <TodoCard
           key={todo.id}
           todo={todo}
-          onToggleTrigger={(id) => todos.toggleCompletion(id)}
-          onDeleteTrigger={(id) => todos.delete(id)}
+          onToggleTrigger={(id) => toggleTodo(id)}
+          onDeleteTrigger={(id) => deleteTodo(id)}
         />
       ))}
     </div>
