@@ -30,7 +30,7 @@ export const TodoCard = ({
         <Label
           htmlFor={`todo-${todo.id}`}
           className={cn(
-            "truncate cursor-pointer",
+            "text-sm line-clamp-1 cursor-pointer",
             todo.isCompleted && "text-muted-foreground line-through"
           )}
         >

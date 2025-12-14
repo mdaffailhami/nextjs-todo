@@ -1,10 +1,15 @@
 import "./globals.css";
+import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeSwitcher } from "@/app/theme-switcher";
 import { ThemeProvider } from "next-themes";
 import { TodosProvider } from "@/contexts/todos";
+import { APP_TITLE, APP_DESCRIPTION } from "@/lib/constants";
 
-export { metadata } from "@/lib/constants";
+export const metadata: Metadata = {
+  title: APP_TITLE,
+  description: APP_DESCRIPTION,
+};
 
 const inter = Inter({
   variable: "--font-inter",

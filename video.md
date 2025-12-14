@@ -22,19 +22,18 @@
 
 ```ts
 // @/lib/constants.ts
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "NextJS Todo",
-  description: "A simple todo app built with NextJS.",
-};
+export const APP_TITLE = "NextJS Todo";
+export const APP_DESCRIPTION = "A simple todo app built with NextJS.";
 ```
 
 ```tsx
 // @/app/layout.tsx
 ...
 
-export { metadata } from "@/lib/constants";
+export const metadata: Metadata = {
+  title: APP_TITLE,
+  description: APP_DESCRIPTION,
+};
 
 const inter = Inter({
   variable: "--font-inter",
@@ -278,10 +277,8 @@ export default () => {
       <div className="bg-card flex flex-col w-full max-w-sm gap-6 rounded-xl border p-6 shadow-md">
         {/* Header */}
         <div className="flex flex-col gap-2">
-          <h1 className="text-primary text-2xl font-semibold">
-            {metadata.title as string}
-          </h1>
-          <p className="text-sm">{metadata.description}</p>
+          <h1 className="text-primary text-2xl font-semibold">{APP_TITLE}</h1>
+          <p className="text-sm">{APP_DESCRIPTION}</p>
         </div>
 
         <TodoInput />
@@ -368,7 +365,7 @@ export const TodoCard = ({
         <Label
           htmlFor={`todo-${todo.id}`}
           className={cn(
-            "truncate cursor-pointer",
+            "text-sm line-clamp-1 cursor-pointer",
             todo.isCompleted && "text-muted-foreground line-through"
           )}
         >

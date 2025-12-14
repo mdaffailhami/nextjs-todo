@@ -1,6 +1,2 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "NextJS Todo",
-  description: "A simple todo app built with NextJS.",
-};
+export const APP_TITLE = "NextJS Todo";
+export const APP_DESCRIPTION = "A simple todo app built with NextJS.";
