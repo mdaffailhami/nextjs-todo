@@ -2,7 +2,7 @@
 
 import { TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { type Todo } from "@/schema";
+import type { Todo } from "@/schema";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "./ui/skeleton";

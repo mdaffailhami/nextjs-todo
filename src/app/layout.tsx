@@ -1,19 +1,15 @@
 import "./globals.css";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeSwitcher } from "@/app/theme-switcher";
 import { ThemeProvider } from "next-themes";
 import { TodosProvider } from "@/contexts/todos";
 
+export { metadata } from "@/lib/constants";
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
-
-export const metadata: Metadata = {
-  title: "NextJS Todo",
-  description: "A simple todo app built with NextJS.",
-};
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (

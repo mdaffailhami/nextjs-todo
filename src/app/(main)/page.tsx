@@ -1,5 +1,6 @@
 import { TodoInput } from "./todo-input";
 import { TodoList } from "./todo-list";
+import { metadata } from "@/lib/constants";
 
 export default () => {
   return (
@@ -8,8 +9,10 @@ export default () => {
       <div className="border-neutral-3 bg-neutral-2 flex w-full max-w-sm flex-col gap-6 rounded-xl border p-6 shadow-sm">
         {/* Header */}
         <div className="flex flex-col gap-2">
-          <h1 className="text-primary text-2xl font-semibold">NextJS Todo</h1>
-          <p className="text-sm">A simple todo app built with NextJS.</p>
+          <h1 className="text-primary text-2xl font-semibold">
+            {metadata.title as string}
+          </h1>
+          <p className="text-sm">{metadata.description}</p>
         </div>
 
         {/* Content */}
