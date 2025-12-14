@@ -1,6 +1,6 @@
 "use client";
 
-import { Todo } from "@/schema";
+import { Todo } from "@/lib/schemas";
 import { createContext, useState, use, useEffect } from "react";
 
 const STORAGE_KEY = "todos";

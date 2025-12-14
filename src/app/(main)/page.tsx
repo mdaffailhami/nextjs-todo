@@ -4,9 +4,9 @@ import { metadata } from "@/lib/constants";
 
 export default () => {
   return (
-    <main className="container mx-auto flex min-h-screen flex-col items-center justify-center gap-y-3 px-2 py-4">
+    <main className="flex min-h-dvh items-center justify-center p-4">
       {/* Card */}
-      <div className="border-neutral-3 bg-neutral-2 flex w-full max-w-sm flex-col gap-6 rounded-xl border p-6 shadow-sm">
+      <div className="bg-card flex flex-col w-full max-w-sm gap-6 rounded-xl border p-6 shadow-md">
         {/* Header */}
         <div className="flex flex-col gap-2">
           <h1 className="text-primary text-2xl font-semibold">
@@ -15,11 +15,8 @@ export default () => {
           <p className="text-sm">{metadata.description}</p>
         </div>
 
-        {/* Content */}
-        <div className="flex flex-col gap-6">
-          <TodoInput />
-          <TodoList />
-        </div>
+        <TodoInput />
+        <TodoList />
       </div>
     </main>
   );

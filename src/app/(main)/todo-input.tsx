@@ -9,16 +9,19 @@ import { Input } from "@/components/ui/input";
 export const TodoInput = () => {
   const { addTodo } = useTodos();
   const [name, setName] = useState("");
+  const trimmedName = name.trim(); // Trim whitespaces
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (name.trim()) {
-      addTodo(name.trim());
+    // If trimmed name is empty, return
+    if (!trimmedName) return;
 
-      // Reset input
-      setName("");
-    }
+    // Add todo
+    addTodo(trimmedName);
+
+    // Reset input
+    setName("");
   };
 
   return (
@@ -27,6 +30,7 @@ export const TodoInput = () => {
         type="text"
         placeholder="Enter new todo.."
         value={name}
+        autoComplete="off"
         onChange={(e) => setName(e.target.value)}
       />
 
@@ -34,7 +38,7 @@ export const TodoInput = () => {
         variant="default"
         size="icon-lg"
         type="submit"
-        disabled={!name.trim()}
+        disabled={!trimmedName}
       >
         <PlusIcon className="size-5" />
       </Button>

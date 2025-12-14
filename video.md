@@ -16,7 +16,7 @@
 
 ## Add Shadcn UI Components
 
-> npx shadcn@latest add button checkbox input skeleton
+> npx shadcn@latest add button checkbox input label skeleton
 
 ## Specify metadata, font, and theme
 
@@ -68,12 +68,16 @@ export default ({ children }: { children: React.ReactNode }) => {
 ```css
 /* @/app/globals.css */
 
-... @layer base {
+... 
+
+/*  */
+@layer base {
   * {
-    @apply border-border outline-ring/50 font-sans;
+    @apply border-border outline-ring/50;
   }
+
   body {
-    @apply bg-background text-foreground transition-colors;
+    @apply bg-background text-foreground font-sans transition-colors;
   }
 }
 ```
@@ -143,7 +147,7 @@ export const useIsHydrated = () => {
 ## Create todo schema
 
 ```ts
-// @/schema.ts
+// @/lib/schemas.ts
 export type Todo = {
   id: string;
   name: string;
@@ -157,7 +161,7 @@ export type Todo = {
 // @/contexts/todos.tsx
 "use client";
 
-import { Todo } from "@/schema";
+import type { Todo } from "@/lib/schemas";
 import { createContext, useState, use, useEffect } from "react";
 
 const STORAGE_KEY = "todos";
@@ -246,15 +250,32 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
 };
 ```
 
+## Add TodosProvider
+
+```tsx
+// @/app/layout.tsx
+...
+
+const Providers = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <TodosProvider>{children}</TodosProvider>
+    </ThemeProvider>
+  );
+};
+
+...
+```
+
 ## Create main page
 
 ```tsx
 // @/app/(main)/page.tsx
 export default () => {
   return (
-    <main className="container mx-auto flex min-h-screen flex-col items-center justify-center gap-y-3 px-2 py-4">
+    <main className="flex min-h-dvh items-center justify-center p-4">
       {/* Card */}
-      <div className="border-neutral-3 bg-neutral-2 flex w-full max-w-sm flex-col gap-6 rounded-xl border p-6 shadow-sm">
+      <div className="bg-card flex flex-col w-full max-w-sm gap-6 rounded-xl border p-6 shadow-md">
         {/* Header */}
         <div className="flex flex-col gap-2">
           <h1 className="text-primary text-2xl font-semibold">
@@ -263,38 +284,37 @@ export default () => {
           <p className="text-sm">{metadata.description}</p>
         </div>
 
-        {/* Content */}
-        <div className="flex flex-col gap-6">
-          <TodoInput />
-          <TodoList />
-        </div>
+        <TodoInput />
+        <TodoList />
       </div>
     </main>
   );
 };
 ```
 
-## Create TodoInput component
+## Create TodoInput
 
 ```tsx
 // @/app/(main)/todo-input.tsx
 "use client";
-
 ...
 
 export const TodoInput = () => {
   const { addTodo } = useTodos();
   const [name, setName] = useState("");
+  const trimmedName = name.trim(); // Trim whitespaces
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (name.trim()) {
-      addTodo(name.trim());
+    // If trimmed name is empty, return
+    if (!trimmedName) return;
 
-      // Reset input
-      setName("");
-    }
+    // Add todo
+    addTodo(trimmedName);
+
+    // Reset input
+    setName("");
   };
 
   return (
@@ -303,6 +323,7 @@ export const TodoInput = () => {
         type="text"
         placeholder="Enter new todo.."
         value={name}
+        autoComplete="off"
         onChange={(e) => setName(e.target.value)}
       />
 
@@ -310,14 +331,13 @@ export const TodoInput = () => {
         variant="default"
         size="icon-lg"
         type="submit"
-        disabled={!name.trim()}
+        disabled={!trimmedName}
       >
         <PlusIcon className="size-5" />
       </Button>
     </form>
   );
 };
-
 ```
 
 ## Create TodoCard & TodoCardSkeleton components
@@ -325,49 +345,42 @@ export const TodoInput = () => {
 ```tsx
 // @/components/todo-card.tsx
 "use client";
-
-import { TrashIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import type { Todo } from "@/schema";
-import { cn } from "@/lib/utils";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Skeleton } from "./ui/skeleton";
-
+...
 type TodoCardProps = {
   todo: Todo;
-  onToggleTrigger: (id: string) => void;
-  onDeleteTrigger: (id: string) => void;
+  handleToggle: (id: string) => void;
+  handleDelete: (id: string) => void;
 };
 
 export const TodoCard = ({
   todo,
-  onToggleTrigger,
-  onDeleteTrigger,
+  handleToggle,
+  handleDelete,
 }: TodoCardProps) => {
   return (
-    <div className="border-neutral-3 bg-neutral-2 flex items-center justify-between rounded-lg border p-3 shadow-sm transition-all">
+    <div className="bg-card flex items-center justify-between rounded-lg border p-3 shadow-sm">
       <div className="flex items-center gap-3 overflow-hidden">
         <Checkbox
           id={`todo-${todo.id}`}
           checked={todo.isCompleted}
-          onCheckedChange={(_) => onToggleTrigger(todo.id)}
+          onCheckedChange={(_) => handleToggle(todo.id)}
         />
-        <label
+        <Label
           htmlFor={`todo-${todo.id}`}
           className={cn(
-            "cursor-pointer truncate text-sm font-medium transition-all",
-            todo.isCompleted && "text-on-neutral-2 line-through"
+            "truncate cursor-pointer",
+            todo.isCompleted && "text-muted-foreground line-through"
           )}
         >
           {todo.name}
-        </label>
+        </Label>
       </div>
 
       <Button
         variant="ghost"
         className="text-destructive hover:text-destructive"
         size="icon-lg"
-        onClick={() => onDeleteTrigger(todo.id)}
+        onClick={() => handleDelete(todo.id)}
       >
         <TrashIcon className="size-4.5" />
       </Button>
@@ -377,7 +390,7 @@ export const TodoCard = ({
 
 export const TodoCardSkeleton = () => {
   return (
-    <div className="border-neutral-3 bg-neutral-2 flex items-center justify-between rounded-lg border p-3 shadow-sm transition-all">
+    <div className="bg-card flex items-center justify-between rounded-lg border p-3 shadow-sm">
       <div className="flex items-center gap-3 overflow-hidden">
         <Skeleton className="size-5.5 rounded-full" />
         <Skeleton className="h-4 w-24 rounded" />
@@ -389,7 +402,7 @@ export const TodoCardSkeleton = () => {
 };
 ```
 
-## Create TodoList component
+## Create TodoList
 
 ```tsx
 // @/app/(main)/todo-list.tsx
@@ -414,7 +427,7 @@ export const TodoList = () => {
   // If there is no todo
   if (todos.length === 0) {
     return (
-      <div className="text-on-neutral-2 border-neutral-4 flex h-32 flex-col items-center justify-center rounded-lg border border-dashed text-center text-sm">
+      <div className="text-muted-foreground flex h-32 flex-col items-center justify-center rounded-lg border border-dashed text-center text-sm">
         <p>No todos yet.</p>
         <p>Add one to get started!</p>
       </div>
@@ -427,8 +440,8 @@ export const TodoList = () => {
         <TodoCard
           key={todo.id}
           todo={todo}
-          onToggleTrigger={(id) => toggleTodo(id)}
-          onDeleteTrigger={(id) => deleteTodo(id)}
+          handleToggle={(id) => toggleTodo(id)}
+          handleDelete={(id) => deleteTodo(id)}
         />
       ))}
     </div>

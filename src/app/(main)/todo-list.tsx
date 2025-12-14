@@ -19,7 +19,7 @@ export const TodoList = () => {
   // If there is no todo
   if (todos.length === 0) {
     return (
-      <div className="text-on-neutral-2 border-neutral-4 flex h-32 flex-col items-center justify-center rounded-lg border border-dashed text-center text-sm">
+      <div className="text-muted-foreground flex h-32 flex-col items-center justify-center rounded-lg border border-dashed text-center text-sm">
         <p>No todos yet.</p>
         <p>Add one to get started!</p>
       </div>
@@ -32,8 +32,8 @@ export const TodoList = () => {
         <TodoCard
           key={todo.id}
           todo={todo}
-          onToggleTrigger={(id) => toggleTodo(id)}
-          onDeleteTrigger={(id) => deleteTodo(id)}
+          handleToggle={(id) => toggleTodo(id)}
+          handleDelete={(id) => deleteTodo(id)}
         />
       ))}
     </div>
